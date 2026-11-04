@@ -1,0 +1,22 @@
+# Ambiente virtual Python
+.venv/
+venv/
+env/
+
+# Configurações locais de IDE
+.vscode/
+
+# Cache de execução e testes
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Bancos de dados locais (dados pessoais nunca devem ser versionados)
+*.db
+*.sqlite3
+data/*.db
+data/*.sqlite3
+
+# Variáveis de ambiente e credenciais
+.env
