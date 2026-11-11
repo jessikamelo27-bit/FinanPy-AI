@@ -1,8 +1,26 @@
-# 🤖 FinanPy AI — Assistente Inteligente de Análise Financeira Pessoal
+# 🤖 FinanPy AI PRO — Assistente Inteligente de Análise Financeira Pessoal
 
-Aplicação web de análise e planejamento financeiro pessoal desenvolvida em **Python** com **Streamlit**, **Pandas**, **Plotly**, **SQLite** e um **Assistente de IA Híbrido** (motor determinístico local + integração opcional com LLM).
+Aplicação web Full-Stack de análise e planejamento financeiro pessoal desenvolvida em **Python** com **Flask**, **HTML5/CSS3/JS (Dark Fintech Glassmorphism)**, **Pandas**, **Plotly**, **SQLite** e um **Assistente de IA Híbrido** (motor determinístico local + integração opcional com LLM).
 
 Este projeto foi construído como portfólio prático para demonstrar engenharia de software, modelagem de dados, precisão em cálculos financeiros, testes automatizados e aplicação responsável de Inteligência Artificial.
+
+---
+
+## 📸 Demonstração Visual (Capturas de Tela Reais da Aplicação)
+
+> *Nota de transparência: As capturas abaixo foram geradas a partir da aplicação em execução real utilizando o conjunto de dados de demonstração (`[DEMO]`), com todos os indicadores, gráficos e recomendações calculados pelo Python.*
+
+### 1. Dashboard Financeiro Interativo (KPIs, Comparativo Mensal, Categorias, Saldo e Fluxo Sankey)
+![Dashboard Financeiro](./docs/screenshots/01-dashboard.png)
+
+### 2. FinanPy AI Assistant (Diagnóstico Determinístico, Oportunidades de Economia e Q&A)
+![FinanPy AI Assistant](./docs/screenshots/04-assistente-ia.png)
+
+### 3. Metas de Economia e Planejamento Mensal
+![Metas e Planejamento](./docs/screenshots/03-metas.png)
+
+### 4. Gestão de Lançamentos e Importação/Exportação CSV com Validação Prévia
+![Lançamentos e CSV](./docs/screenshots/02-lancamentos.png)
 
 ---
 

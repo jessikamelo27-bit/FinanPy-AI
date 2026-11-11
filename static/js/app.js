@@ -200,7 +200,10 @@ const layoutDark = {
 
 function renderizarGraficoMensal(dados) {
     const el = document.getElementById("chart-mensal");
-    const meses = dados.map(d => d.ano_mes);
+    const meses = dados.map(d => {
+        const partes = String(d.ano_mes).split("-");
+        return partes.length === 2 ? `${partes[1]}/${partes[0]}` : d.ano_mes;
+    });
     Plotly.newPlot(el, [
         {
             x: meses,
@@ -228,7 +231,7 @@ function renderizarGraficoMensal(dados) {
         ...layoutDark,
         barmode: "group",
         legend: { orientation: "h", y: 1.12 },
-        xaxis: { gridcolor: "rgba(255,255,255,0.05)" },
+        xaxis: { type: "category", gridcolor: "rgba(255,255,255,0.05)" },
         yaxis: { gridcolor: "rgba(255,255,255,0.06)" }
     }, { responsive: true, displayModeBar: false });
 }
@@ -243,13 +246,15 @@ function renderizarGraficoCategorias(cats) {
         labels: cats.map(c => c.categoria),
         values: cats.map(c => c.valor),
         type: "pie",
-        hole: 0.5,
-        textinfo: "label+percent",
+        hole: 0.52,
+        textinfo: "percent",
+        textposition: "inside",
         marker: { colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#14b8a6", "#f43f5e"] }
     }], {
         ...layoutDark,
+        margin: { l: 20, r: 130, t: 20, b: 20 },
         showlegend: true,
-        legend: { orientation: "h", y: -0.1 }
+        legend: { orientation: "v", x: 1.02, y: 0.5 }
     }, { responsive: true, displayModeBar: false });
 }
 
@@ -265,7 +270,8 @@ function renderizarGraficoEvolucaoSaldo(evol) {
         line: { color: "#3b82f6", width: 3 }
     }], {
         ...layoutDark,
-        xaxis: { gridcolor: "rgba(255,255,255,0.05)" },
+        margin: { l: 50, r: 20, t: 20, b: 78 },
+        xaxis: { type: "category", tickangle: -35, gridcolor: "rgba(255,255,255,0.05)" },
         yaxis: { gridcolor: "rgba(255,255,255,0.06)" }
     }, { responsive: true, displayModeBar: false });
 }
@@ -474,6 +480,16 @@ async function excluirMeta(id) {
 // ============================================================
 // 7. FINANPY AI ASSISTANT
 // ============================================================
+function formatarMarkdownIA(texto) {
+    if (!texto) return "";
+    return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\*\*(.+?)\*\*/g, '<b style="color:#f8fafc;">$1</b>')
+        .replace(/\*(.+?)\*/g, "<em>$1</em>");
+}
+
 function renderizarAssistenteIA(diag, statusIa) {
     document.getElementById("ia-status-banner").textContent = statusIa.modo_padrao;
     const labelLlm = document.getElementById("label-check-llm");
@@ -481,18 +497,18 @@ function renderizarAssistenteIA(diag, statusIa) {
 
     document.getElementById("ia-resumo-executivo").innerHTML = `
         <strong>Resumo Executivo do Período</strong>
-        <p>${diag.resumo_executivo}</p>
+        <p>${formatarMarkdownIA(diag.resumo_executivo)}</p>
     `;
 
     const divMaiores = document.getElementById("ia-maiores-gastos");
-    const itensMaiores = (diag.maiores_gastos || []).map(g => `<div class="suggestion-item info"><p>${g}</p></div>`);
-    itensMaiores.push(`<div class="suggestion-item info"><strong>Comparação entre Períodos</strong><p>${diag.comparacao_periodos}</p></div>`);
+    const itensMaiores = (diag.maiores_gastos || []).map(g => `<div class="suggestion-item info"><p>${formatarMarkdownIA(g)}</p></div>`);
+    itensMaiores.push(`<div class="suggestion-item info"><strong>Comparação entre Períodos</strong><p>${formatarMarkdownIA(diag.comparacao_periodos)}</p></div>`);
     divMaiores.innerHTML = itensMaiores.join("");
 
     const divOp = document.getElementById("ia-oportunidades");
-    const itensOp = (diag.oportunidades_economia || []).map(o => `<div class="suggestion-item sucesso"><p>${o}</p></div>`);
+    const itensOp = (diag.oportunidades_economia || []).map(o => `<div class="suggestion-item sucesso"><p>${formatarMarkdownIA(o)}</p></div>`);
     (diag.recomendacoes || []).forEach(r => {
-        itensOp.push(`<div class="suggestion-item ${r.nivel}"><strong>${r.titulo}</strong><p>${r.texto}</p></div>`);
+        itensOp.push(`<div class="suggestion-item ${r.nivel}"><strong>${formatarMarkdownIA(r.titulo)}</strong><p>${formatarMarkdownIA(r.texto)}</p></div>`);
     });
     divOp.innerHTML = itensOp.join("") || `<p style="color:#94a3b8;font-size:13px;">Sem recomendações adicionais para o período.</p>`;
 
@@ -512,9 +528,9 @@ async function enviarPerguntaIA(pergunta) {
     const card = document.createElement("div");
     card.className = "suggestion-item info";
     card.innerHTML = `
-        <strong>Você perguntou: "${pergunta}"</strong>
-        <p style="white-space:pre-line; margin-top:6px;">${dados.resposta}</p>
-        <small style="display:block; margin-top:8px; color:#64748b;">🔒 ${dados.aviso_modo}</small>
+        <strong>Você perguntou: "${formatarMarkdownIA(pergunta)}"</strong>
+        <p style="white-space:pre-line; margin-top:6px;">${formatarMarkdownIA(dados.resposta)}</p>
+        <small style="display:block; margin-top:8px; color:#64748b;">🔒 ${formatarMarkdownIA(dados.aviso_modo)}</small>
     `;
     hist.prepend(card);
 }
