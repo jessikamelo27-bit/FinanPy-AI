@@ -343,5 +343,14 @@ def api_limpar_usuario():
 
 
 if __name__ == "__main__":
+    import os
+    import sys
+
+    if sys.stdout is None:
+        sys.stdout = open(os.devnull, "w", encoding="utf-8")
+    if sys.stderr is None:
+        sys.stderr = open(os.devnull, "w", encoding="utf-8")
+
     print("[FinanPy AI PRO] Servidor Dark Fintech iniciado em http://127.0.0.1:5000")
-    app.run(host="127.0.0.1", port=5000, debug=True, use_reloader=False)
+    app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False)
+
