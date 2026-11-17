@@ -1,84 +1,133 @@
-/**
- * FinanPy AI PRO — Front-End Application Logic (Dark Fintech Edition)
- * Conecta-se à API Flask/SQLite/Pandas, gerencia CRUD com edição, importação CSV validada,
- * metas de economia e o FinanPy AI Assistant.
- */
+// ============================================================
+// FINANPY — FRONTEND CONTROLLER (EDITORIAL WEALTH EDITION)
+// Consumo da API REST real em Flask + SQLite + Plotly
+// ============================================================
 
-let estado = {
+const estado = {
     modo: "usuario",
     ano: "Todos",
     mes: "Todos",
     categoria: "Todas",
-    categoriasPorTipo: {
-        "Receita": ["Salário", "Renda extra", "Outros"],
-        "Despesa": ["Alimentação", "Moradia", "Transporte", "Saúde", "Educação", "Lazer", "Contas e serviços", "Compras", "Outros"]
-    },
     lancamentos: [],
+    categoriasPorTipo: { Receita: [], Despesa: [] },
     metas: [],
-    validosCsvPendentes: []
+    linhasCsvValidas: []
 };
 
-const formatadorBRL = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL"
-});
+const TITULOS_PAGINAS = {
+    "view-dashboard": [
+        "Relatório Patrimonial",
+        "Central de Inteligência Financeira",
+        "Síntese de fluxo de caixa, alocação por categoria e análise consultiva"
+    ],
+    "view-lancamentos": [
+        "Livro-Razão & Conciliação",
+        "Movimentações e Importação CSV",
+        "Registro contábil detalhado, filtros avançados e validação prévia de extratos"
+    ],
+    "view-metas": [
+        "Planejamento de Longo Prazo",
+        "Metas de Economia e Acumulação",
+        "Acompanhamento de objetivos financeiros e esforço mensal necessário"
+    ],
+    "view-ia": [
+        "Consultoria Analítica",
+        "Diagnóstico Patrimonial e Assistente Financeiro",
+        "Análises determinísticas e recomendações baseadas nos seus registros"
+    ],
+    "view-config": [
+        "Governança & Plano de Contas",
+        "Parâmetros, Categorias e Dados Locais",
+        "Gestão do plano de categorias, base demonstrativa e privacidade SQLite"
+    ]
+};
 
 function formatarMoeda(valor) {
-    return formatadorBRL.format(Number(valor || 0));
+    return Number(valor || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+        minimumFractionDigits: 2
+    });
 }
 
 function mostrarToast(mensagem) {
-    const toast = document.getElementById("toast");
-    toast.textContent = mensagem;
-    toast.classList.add("show");
-    setTimeout(() => toast.classList.remove("show"), 3200);
+    const t = document.getElementById("toast");
+    t.textContent = mensagem;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 3400);
+}
+
+function formatarMarkdownIA(texto) {
+    if (!texto) return "";
+    return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\*\*(.+?)\*\*/g, '<b style="color:#202923;font-weight:700;">$1</b>')
+        .replace(/\*(.+?)\*/g, "<em>$1</em>");
+}
+
+function limparEmojisLegados(texto) {
+    if (!texto) return "";
+    return String(texto)
+        .replace(/^[🟢🔴🏦🧪👤✨➕🎯🔎💡📊🔒📐]+\s*/g, "")
+        .trim();
 }
 
 // ============================================================
-// 1. NAVEGAÇÃO ENTRE SEÇÕES E MODAIS
+// 1. NAVEGAÇÃO ENTRE TELAS E MODAIS
 // ============================================================
-function configurarNavegacao() {
+function navegarParaSecao(targetId) {
     const botoes = document.querySelectorAll(".nav-item");
     const secoes = document.querySelectorAll(".view-section");
 
+    botoes.forEach(b => {
+        b.classList.toggle("active", b.getAttribute("data-target") === targetId);
+    });
+    secoes.forEach(s => {
+        s.classList.toggle("active", s.id === targetId);
+    });
+
+    if (TITULOS_PAGINAS[targetId]) {
+        const [eyebrow, titulo, subtitulo] = TITULOS_PAGINAS[targetId];
+        const elEyebrow = document.getElementById("page-eyebrow");
+        if (elEyebrow) elEyebrow.textContent = eyebrow;
+        document.getElementById("page-title").textContent = titulo;
+        document.getElementById("page-subtitle").textContent = subtitulo;
+    }
+
+    if (targetId === "view-dashboard") {
+        window.dispatchEvent(new Event("resize"));
+    }
+}
+
+function configurarNavegacao() {
+    const botoes = document.querySelectorAll(".nav-item");
     botoes.forEach(btn => {
         btn.addEventListener("click", () => {
-            botoes.forEach(b => b.classList.remove("active"));
-            secoes.forEach(s => s.classList.remove("active"));
-            btn.classList.add("active");
-            const alvo = document.getElementById(btn.dataset.target);
-            if (alvo) alvo.classList.add("active");
-            window.dispatchEvent(new Event("resize"));
+            const alvo = btn.getAttribute("data-target");
+            navegarParaSecao(alvo);
         });
+    });
+
+    document.getElementById("btn-abrir-modal-novo").addEventListener("click", () => abrirModalNovoLancamento());
+    document.getElementById("btn-abrir-modal-meta").addEventListener("click", () => {
+        document.getElementById("modal-meta").classList.add("open");
     });
 
     document.querySelectorAll("[data-close]").forEach(btn => {
         btn.addEventListener("click", () => {
-            document.getElementById(btn.dataset.close).classList.remove("open");
+            const idModal = btn.getAttribute("data-close");
+            document.getElementById(idModal).classList.remove("open");
         });
     });
-
-    document.getElementById("btn-abrir-modal-novo").addEventListener("click", abrirModalNovoLancamento);
-    document.getElementById("btn-abrir-modal-meta").addEventListener("click", () => {
-        document.getElementById("modal-meta").classList.add("open");
-    });
-}
-
-function atualizarOpcoesCategoriaModal(categoriaSelecionada = null) {
-    const tipo = document.getElementById("lanc-tipo").value;
-    const selectCat = document.getElementById("lanc-categoria");
-    const lista = estado.categoriasPorTipo[tipo] || ["Outros"];
-    selectCat.innerHTML = lista.map(c => `<option value="${c}">${c}</option>`).join("");
-    if (categoriaSelecionada && lista.includes(categoriaSelecionada)) {
-        selectCat.value = categoriaSelecionada;
-    }
 }
 
 function abrirModalNovoLancamento() {
-    document.getElementById("modal-lancamento-titulo").textContent = "➕ Novo Lançamento";
+    document.getElementById("modal-lancamento-titulo").textContent = "Novo Lançamento";
     document.getElementById("lanc-id").value = "";
     document.getElementById("lanc-tipo").value = "Despesa";
-    atualizarOpcoesCategoriaModal();
+    atualizarOpcoesCategoriaModal("Despesa");
     document.getElementById("lanc-descricao").value = "";
     document.getElementById("lanc-valor").value = "";
     document.getElementById("lanc-data").value = new Date().toISOString().split("T")[0];
@@ -87,22 +136,30 @@ function abrirModalNovoLancamento() {
 }
 
 function abrirModalEdicao(id) {
-    const item = estado.lancamentos.find(x => x.id === id);
+    const item = estado.lancamentos.find(l => l.id === id);
     if (!item) return;
 
-    document.getElementById("modal-lancamento-titulo").textContent = `✏️ Editar Lançamento #${item.id}`;
-    document.getElementById("lanc-id").value = String(item.id);
+    document.getElementById("modal-lancamento-titulo").textContent = `Editar Lançamento #${item.id}`;
+    document.getElementById("lanc-id").value = item.id;
     document.getElementById("lanc-tipo").value = item.tipo;
-    atualizarOpcoesCategoriaModal(item.categoria);
+    atualizarOpcoesCategoriaModal(item.tipo, item.categoria);
     document.getElementById("lanc-descricao").value = item.descricao;
-    document.getElementById("lanc-valor").value = Number(item.valor).toFixed(2);
+    document.getElementById("lanc-valor").value = item.valor.toFixed(2);
     document.getElementById("lanc-data").value = item.data;
     document.getElementById("erro-form-lancamento").style.display = "none";
     document.getElementById("modal-lancamento").classList.add("open");
 }
 
+function atualizarOpcoesCategoriaModal(tipoSelecionado, categoriaAtual = null) {
+    const selectCat = document.getElementById("lanc-categoria");
+    const lista = estado.categoriasPorTipo[tipoSelecionado] || ["Outros"];
+    selectCat.innerHTML = lista.map(cat =>
+        `<option value="${cat}" ${cat === categoriaAtual ? "selected" : ""}>${cat}</option>`
+    ).join("");
+}
+
 // ============================================================
-// 2. CARREGAMENTO CENTRAL (/api/dashboard)
+// 2. CARREGAMENTO E ATUALIZAÇÃO DO DASHBOARD
 // ============================================================
 async function carregarDados() {
     const params = new URLSearchParams({
@@ -115,16 +172,15 @@ async function carregarDados() {
     const resp = await fetch(`/api/dashboard?${params.toString()}`);
     const dados = await resp.json();
 
-    estado.categoriasPorTipo = dados.categorias_por_tipo || estado.categoriasPorTipo;
     estado.lancamentos = dados.lancamentos || [];
+    estado.categoriasPorTipo = dados.categorias_por_tipo || { Receita: [], Despesa: [] };
     estado.metas = dados.metas || [];
 
-    // Atualiza banner e seletor de modo
     document.getElementById("select-modo-dados").value = dados.modo_atual;
     document.getElementById("sidebar-modo-label").textContent =
-        dados.modo_atual === "demo" ? "🧪 Dados de Demonstração" : "👤 Meus Dados Reais";
+        dados.modo_atual === "demo" ? "Base de Demonstração" : "Carteira Pessoal";
     document.getElementById("banner-demo").style.display =
-        dados.modo_atual === "demo" ? "block" : "none";
+        dados.modo_atual === "demo" ? "flex" : "none";
 
     atualizarFiltrosGlobais(dados.anos_disponiveis || []);
     renderizarKPIs(dados.indicadores);
@@ -134,10 +190,13 @@ async function carregarDados() {
     document.getElementById("dashboard-graficos").style.display = semDados ? "none" : "block";
 
     if (!semDados) {
-        renderizarGraficoMensal(dados.comparativo_mensal || []);
-        renderizarGraficoCategorias(dados.gastos_categoria || []);
+        renderizarInsightsEditoriaisDashboard(dados.diagnostico_ia);
         renderizarGraficoEvolucaoSaldo(dados.evolucao_saldo || []);
+        renderizarGraficoMensal(dados.comparativo_mensal || []);
+        renderizarTopCategoriasDashboard(dados.gastos_categoria || []);
+        renderizarGraficoCategorias(dados.gastos_categoria || []);
         renderizarGraficoSankey(dados.sankey || {});
+        renderizarUltimasMovimentacoesDashboard(estado.lancamentos);
     }
 
     renderizarTabelaLancamentos();
@@ -170,32 +229,125 @@ function atualizarFiltrosGlobais(anos) {
 
 function renderizarKPIs(ind) {
     document.getElementById("kpi-receitas").textContent = formatarMoeda(ind.total_receitas);
-    document.getElementById("kpi-receitas-sub").textContent = `${ind.quantidade_receitas} receita(s) no período`;
+    document.getElementById("kpi-receitas-sub").textContent =
+        `${ind.quantidade_receitas} receita(s) no período`;
 
     document.getElementById("kpi-despesas").textContent = formatarMoeda(ind.total_despesas);
-    document.getElementById("kpi-despesas-sub").textContent = `${ind.quantidade_despesas} despesa(s) no período`;
+    document.getElementById("kpi-despesas-sub").textContent =
+        `${ind.quantidade_despesas} despesa(s) no período`;
 
     document.getElementById("kpi-saldo").textContent = formatarMoeda(ind.saldo);
     document.getElementById("kpi-saldo-sub").textContent =
-        ind.saldo >= 0 ? "✅ Superávit no período" : "⚠️ Déficit no período";
+        ind.saldo >= 0 ? "Superávit líquido no período" : "Déficit líquido no período";
+
+    const badgeSaldo = document.getElementById("kpi-saldo-badge");
+    if (badgeSaldo) {
+        badgeSaldo.textContent = ind.saldo >= 0 ? "Superávit" : "Déficit";
+    }
 
     if (ind.comprometimento_calculavel) {
-        document.getElementById("kpi-comprometido").textContent = `${ind.percentual_comprometido.toFixed(1)}%`;
-        document.getElementById("kpi-comprometido-sub").textContent = `Taxa de economia: ${ind.taxa_economia.toFixed(1)}%`;
+        document.getElementById("kpi-comprometido").textContent = `${ind.taxa_economia.toFixed(1)}%`;
+        document.getElementById("kpi-comprometido-sub").textContent =
+            `Receita comprometida: ${ind.percentual_comprometido.toFixed(1)}%`;
     } else {
         document.getElementById("kpi-comprometido").textContent = "N/D";
-        document.getElementById("kpi-comprometido-sub").textContent = "Sem receitas registradas no período";
+        document.getElementById("kpi-comprometido-sub").textContent =
+            "Sem receitas registradas no período";
     }
 }
 
+function renderizarInsightsEditoriaisDashboard(diag) {
+    const container = document.getElementById("dashboard-editorial-insights");
+    if (!container || !diag) return;
+
+    const sintese = diag.resumo_executivo || "Sem dados suficientes para síntese no período.";
+    const maiorGasto = (diag.maiores_gastos && diag.maiores_gastos.length > 0)
+        ? diag.maiores_gastos[0]
+        : (diag.comparacao_periodos || "Sem concentração de despesas identificada.");
+    const oportunidade = (diag.oportunidades_economia && diag.oportunidades_economia.length > 0)
+        ? diag.oportunidades_economia[0]
+        : (diag.comparacao_periodos || "Mantenha o acompanhamento periódico das despesas.");
+
+    container.innerHTML = `
+        <div class="advisory-note">
+            <span class="advisory-note-index">01 &middot; Balanço Patrimonial</span>
+            <h4>Síntese do Período</h4>
+            <p>${formatarMarkdownIA(sintese)}</p>
+        </div>
+        <div class="advisory-note">
+            <span class="advisory-note-index">02 &middot; Principal Centro de Custo</span>
+            <h4>Concentração de Saídas</h4>
+            <p>${formatarMarkdownIA(maiorGasto)}</p>
+        </div>
+        <div class="advisory-note">
+            <span class="advisory-note-index">03 &middot; Diretriz de Eficiência</span>
+            <h4>Oportunidade de Economia</h4>
+            <p>${formatarMarkdownIA(oportunidade)}</p>
+        </div>
+    `;
+}
+
+function renderizarTopCategoriasDashboard(cats) {
+    const container = document.getElementById("dashboard-top-categorias");
+    if (!container) return;
+
+    if (!cats || !cats.length) {
+        container.innerHTML = `<p style="color:#777E78;padding:24px 0;">Não há despesas registradas no período selecionado.</p>`;
+        return;
+    }
+
+    const topCats = cats.slice(0, 6);
+    container.innerHTML = topCats.map((c, idx) => {
+        const corBarra = idx === 0 ? "#183D32" : (idx === 1 ? "#557A62" : "#7D9B87");
+        return `
+            <div class="cat-rank-item">
+                <div class="cat-rank-header">
+                    <span class="cat-rank-name">${c.categoria}</span>
+                    <span class="cat-rank-meta tabular-nums">
+                        <strong>${formatarMoeda(c.valor)}</strong>
+                        (${c.percentual.toFixed(1)}% &middot; ${c.quantidade} lanç.)
+                    </span>
+                </div>
+                <div class="cat-rank-track">
+                    <div class="cat-rank-fill" style="width:${Math.min(100, Math.max(3, c.percentual))}%; background-color:${corBarra};"></div>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderizarUltimasMovimentacoesDashboard(lancamentos) {
+    const tbody = document.getElementById("dashboard-recent-body");
+    if (!tbody) return;
+
+    const recentes = (lancamentos || []).slice(0, 7);
+    if (!recentes.length) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#777E78;padding:20px;">Nenhuma movimentação no período.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = recentes.map(item => {
+        const sinal = item.tipo === "Receita" ? "+" : "-";
+        const classeValor = item.tipo === "Receita" ? "val-positive" : "val-negative";
+        return `
+            <tr>
+                <td class="tabular-nums">${item.data_br}</td>
+                <td><strong>${item.descricao}</strong></td>
+                <td><span class="badge badge-${item.tipo}">${item.categoria}</span></td>
+                <td class="text-right tabular-nums ${classeValor}">${sinal} ${formatarMoeda(item.valor)}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
 // ============================================================
-// 3. GRÁFICOS INTERATIVOS (PLOTLY DARK)
+// 3. GRÁFICOS MINIMALISTAS E ELEGANTES (PLOTLY EDITORIAL)
 // ============================================================
-const layoutDark = {
+const layoutEditorial = {
     paper_bgcolor: "rgba(0,0,0,0)",
     plot_bgcolor: "rgba(0,0,0,0)",
-    font: { family: "Inter, sans-serif", color: "#cbd5e1", size: 12 },
-    margin: { l: 45, r: 20, t: 20, b: 40 }
+    font: { family: "Manrope, sans-serif", color: "#202923", size: 12 },
+    margin: { l: 52, r: 20, t: 24, b: 44 }
 };
 
 function renderizarGraficoMensal(dados) {
@@ -210,51 +362,67 @@ function renderizarGraficoMensal(dados) {
             y: dados.map(d => d.Receita),
             name: "Receitas",
             type: "bar",
-            marker: { color: "#10b981" }
+            marker: { color: "#183D32" }
         },
         {
             x: meses,
             y: dados.map(d => d.Despesa),
             name: "Despesas",
             type: "bar",
-            marker: { color: "#ef4444" }
+            marker: { color: "#B75C52" }
         },
         {
             x: meses,
             y: dados.map(d => d.Saldo),
-            name: "Saldo Mensal",
+            name: "Saldo Líquido",
             type: "scatter",
             mode: "lines+markers",
-            line: { color: "#60a5fa", width: 3 }
+            line: { color: "#557A62", width: 2.5 },
+            marker: { size: 6, color: "#557A62" }
         }
     ], {
-        ...layoutDark,
+        ...layoutEditorial,
         barmode: "group",
-        legend: { orientation: "h", y: 1.12 },
-        xaxis: { type: "category", gridcolor: "rgba(255,255,255,0.05)" },
-        yaxis: { gridcolor: "rgba(255,255,255,0.06)" }
+        bargap: 0.28,
+        legend: { orientation: "h", y: 1.14, font: { color: "#777E78", size: 11.5 } },
+        xaxis: { type: "category", gridcolor: "#E8E9E2", linecolor: "#E8E9E2", tickfont: { color: "#777E78" } },
+        yaxis: { gridcolor: "#E8E9E2", zerolinecolor: "#E8E9E2", tickfont: { color: "#777E78" } }
     }, { responsive: true, displayModeBar: false });
 }
 
 function renderizarGraficoCategorias(cats) {
     const el = document.getElementById("chart-categorias");
     if (!cats.length) {
-        el.innerHTML = `<p style="color:#64748b;padding:40px;text-align:center;">Não há despesas no período selecionado.</p>`;
+        el.innerHTML = `<p style="color:#777E78;padding:40px;text-align:center;">Não há despesas no período selecionado.</p>`;
         return;
     }
+    const paletaEditorial = [
+        "#183D32",
+        "#557A62",
+        "#B75C52",
+        "#7D9B87",
+        "#A3B8A8",
+        "#C58B83",
+        "#777E78",
+        "#D5DFD7"
+    ];
     Plotly.newPlot(el, [{
         labels: cats.map(c => c.categoria),
         values: cats.map(c => c.valor),
         type: "pie",
-        hole: 0.52,
+        hole: 0.56,
         textinfo: "percent",
         textposition: "inside",
-        marker: { colors: ["#6366f1", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#14b8a6", "#f43f5e"] }
+        insidetextfont: { color: "#FFFFFF", size: 11 },
+        marker: {
+            colors: paletaEditorial,
+            line: { color: "#FFFFFF", width: 2 }
+        }
     }], {
-        ...layoutDark,
-        margin: { l: 20, r: 130, t: 20, b: 20 },
+        ...layoutEditorial,
+        margin: { l: 16, r: 135, t: 16, b: 16 },
         showlegend: true,
-        legend: { orientation: "v", x: 1.02, y: 0.5 }
+        legend: { orientation: "v", x: 1.02, y: 0.5, font: { color: "#202923", size: 11.5 } }
     }, { responsive: true, displayModeBar: false });
 }
 
@@ -267,40 +435,52 @@ function renderizarGraficoEvolucaoSaldo(evol) {
         type: "scatter",
         mode: "lines+markers",
         fill: "tozeroy",
-        line: { color: "#3b82f6", width: 3 }
+        fillcolor: "rgba(24, 61, 50, 0.08)",
+        line: { color: "#183D32", width: 2.5 },
+        marker: { color: "#183D32", size: 5 }
     }], {
-        ...layoutDark,
-        margin: { l: 50, r: 20, t: 20, b: 78 },
-        xaxis: { type: "category", tickangle: -35, gridcolor: "rgba(255,255,255,0.05)" },
-        yaxis: { gridcolor: "rgba(255,255,255,0.06)" }
+        ...layoutEditorial,
+        margin: { l: 54, r: 20, t: 20, b: 76 },
+        xaxis: { type: "category", tickangle: -35, gridcolor: "#E8E9E2", linecolor: "#E8E9E2", tickfont: { color: "#777E78", size: 11 } },
+        yaxis: { gridcolor: "#E8E9E2", zerolinecolor: "#E8E9E2", tickfont: { color: "#777E78" } }
     }, { responsive: true, displayModeBar: false });
 }
 
 function renderizarGraficoSankey(sankey) {
     const el = document.getElementById("chart-sankey");
     if (!sankey.labels || sankey.labels.length < 2) {
-        el.innerHTML = `<p style="color:#64748b;padding:40px;text-align:center;">Adicione receitas e despesas para visualizar o fluxo Sankey.</p>`;
+        el.innerHTML = `<p style="color:#777E78;padding:40px;text-align:center;">Registre receitas e despesas para visualizar o diagrama de alocação.</p>`;
         return;
     }
+
+    const labelsLimpos = sankey.labels.map(l => limparEmojisLegados(l));
+    const coresEditoriais = (sankey.colors || []).map(cor => {
+        if (cor === "#10b981") return "#557A62"; // Receitas
+        if (cor === "#ef4444") return "#B75C52"; // Despesas
+        if (cor === "#3b82f6") return "#183D32"; // Saldo Economizado
+        return "#183D32";                        // Orçamento Central
+    });
+
     Plotly.newPlot(el, [{
         type: "sankey",
         orientation: "h",
         node: {
             pad: 16,
-            thickness: 18,
-            line: { color: "#090d16", width: 1 },
-            label: sankey.labels,
-            color: sankey.colors
+            thickness: 16,
+            line: { color: "#E8E9E2", width: 1 },
+            label: labelsLimpos,
+            color: coresEditoriais
         },
         link: {
             source: sankey.sources,
             target: sankey.targets,
             value: sankey.values,
-            color: "rgba(148, 163, 184, 0.22)"
+            color: "rgba(85, 122, 98, 0.20)"
         }
     }], {
-        ...layoutDark,
-        margin: { l: 15, r: 15, t: 15, b: 15 }
+        ...layoutEditorial,
+        font: { family: "Manrope, sans-serif", color: "#202923", size: 11.5 },
+        margin: { l: 16, r: 16, t: 16, b: 16 }
     }, { responsive: true, displayModeBar: false });
 }
 
@@ -319,33 +499,40 @@ function renderizarTabelaLancamentos() {
 
     const tbody = document.getElementById("tabela-lancamentos-body");
     if (!filtrados.length) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#64748b;padding:28px;">Nenhum lançamento encontrado para os filtros aplicados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#777E78;padding:28px;">Nenhum lançamento encontrado para os filtros aplicados.</td></tr>`;
         return;
     }
 
-    tbody.innerHTML = filtrados.map(item => `
-        <tr>
-            <td>#${item.id}</td>
-            <td>${item.data_br}</td>
-            <td><span class="badge badge-${item.tipo}">${item.tipo}</span></td>
-            <td>${item.categoria}</td>
-            <td><strong>${item.descricao}</strong></td>
-            <td><span class="conta-chip">${item.is_demo ? "🧪 Demo" : "👤 Real"}</span></td>
-            <td style="font-family:'JetBrains Mono',monospace;font-weight:600;">${formatarMoeda(item.valor)}</td>
-            <td class="text-right">
-                <button class="btn-mini" onclick="abrirModalEdicao(${item.id})">✏️ Editar</button>
-                <button class="btn-icon-danger" onclick="confirmarExclusaoLancamento(${item.id}, '${item.descricao.replace(/'/g, "")}')">🗑️ Excluir</button>
-            </td>
-        </tr>
-    `).join("");
+    tbody.innerHTML = filtrados.map(item => {
+        const classeValor = item.tipo === "Receita" ? "val-positive" : "val-negative";
+        const sinal = item.tipo === "Receita" ? "+" : "-";
+        return `
+            <tr>
+                <td class="tabular-nums" style="color:#777E78;">#${item.id}</td>
+                <td class="tabular-nums">${item.data_br}</td>
+                <td><span class="badge badge-${item.tipo}">${item.tipo}</span></td>
+                <td>${item.categoria}</td>
+                <td><strong>${item.descricao}</strong></td>
+                <td><span class="conta-chip">${item.is_demo ? "Demonstração" : "Pessoal"}</span></td>
+                <td class="text-right tabular-nums ${classeValor}">${sinal} ${formatarMoeda(item.valor)}</td>
+                <td class="text-right">
+                    <button class="btn-mini" onclick="abrirModalEdicao(${item.id})">Editar</button>
+                    <button class="btn-mini btn-mini-danger" onclick="confirmarExclusaoLancamento(${item.id})">Excluir</button>
+                </td>
+            </tr>
+        `;
+    }).join("");
 }
 
-async function confirmarExclusaoLancamento(id, descricao) {
-    if (!confirm(`Confirma a exclusão permanente do lançamento #${id} ("${descricao}")?`)) return;
+async function confirmarExclusaoLancamento(id) {
+    const item = estado.lancamentos.find(l => l.id === id);
+    const nome = item ? `${item.descricao} (${formatarMoeda(item.valor)})` : `#${id}`;
+    if (!confirm(`Confirmar a exclusão do lançamento "${nome}"?`)) return;
+
     const resp = await fetch(`/api/lancamentos/${id}`, { method: "DELETE" });
     const dados = await resp.json();
     if (resp.ok) {
-        mostrarToast(dados.mensagem);
+        mostrarToast(dados.mensagem || "Lançamento excluído.");
         carregarDados();
     } else {
         mostrarToast(`Erro: ${dados.erro}`);
@@ -353,84 +540,105 @@ async function confirmarExclusaoLancamento(id, descricao) {
 }
 
 // ============================================================
-// 5. IMPORTAÇÃO CSV COM VALIDAÇÃO PRÉVIA
+// 5. IMPORTAÇÃO E EXPORTAÇÃO CSV COM VALIDAÇÃO PRÉVIA
 // ============================================================
 async function validarArquivoCSV() {
     const input = document.getElementById("input-arquivo-csv");
-    const container = document.getElementById("resultado-previa-csv");
+    const boxResultado = document.getElementById("resultado-previa-csv");
     const btnConfirmar = document.getElementById("btn-confirmar-csv");
 
     if (!input.files || !input.files.length) {
-        mostrarToast("Selecione um arquivo .csv primeiro.");
+        mostrarToast("Selecione um arquivo .csv antes de validar.");
         return;
     }
 
-    const texto = await input.files[0].text();
-    const resp = await fetch("/api/csv/validar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conteudo_csv: texto, modo: estado.modo })
-    });
-    const analise = await resp.json();
+    const formData = new FormData();
+    formData.append("arquivo", input.files[0]);
+    formData.append("modo", estado.modo);
 
-    if (analise.erro_estrutural) {
+    const resp = await fetch("/api/csv/validar", { method: "POST", body: formData });
+    const rel = await resp.json();
+
+    if (!resp.ok) {
+        boxResultado.innerHTML = `<div class="suggestion-item alerta"><strong>Erro no arquivo CSV</strong><p>${rel.erro}</p></div>`;
         btnConfirmar.style.display = "none";
-        container.innerHTML = `<div class="suggestion-item alerta"><strong>Erro Estrutural no CSV</strong><p>${analise.erro_estrutural}</p></div>`;
         return;
     }
 
-    estado.validosCsvPendentes = analise.validos || [];
-    btnConfirmar.style.display = estado.validosCsvPendentes.length > 0 ? "inline-block" : "none";
-
+    estado.linhasCsvValidas = rel.linhas_validas || [];
     let html = `
-        <div class="suggestion-item info" style="margin-bottom:12px;">
-            <strong>Resultado da Análise Prévia do CSV</strong>
-            <p>✅ <strong>${analise.validos.length}</strong> linha(s) válida(s) pronta(s) para importar |
-               ⚠️ <strong>${analise.duplicados.length}</strong> duplicada(s) ignorada(s) |
-               ❌ <strong>${analise.erros.length}</strong> linha(s) com erro</p>
+        <div class="suggestion-item ${rel.linhas_validas.length ? "sucesso" : "aviso"}" style="margin-bottom:14px;">
+            <strong>Resultado da Validação Prévia</strong>
+            <p>Total lido: <b>${rel.total_lidas}</b> &middot; Válidas para importar: <b>${rel.linhas_validas.length}</b> &middot; Duplicadas ignoradas: <b>${rel.duplicadas.length}</b> &middot; Com erro: <b>${rel.erros.length}</b></p>
         </div>
     `;
 
-    if (analise.erros.length) {
-        html += `<div class="suggestion-item alerta" style="margin-bottom:12px;"><strong>Linhas com Erro (bloqueadas):</strong><ul style="margin-left:18px;font-size:12.5px;">` +
-            analise.erros.map(e => `<li>Linha ${e.linha}: ${e.motivo}</li>`).join("") +
+    if (rel.erros.length > 0) {
+        html += `<div class="suggestion-item alerta" style="margin-bottom:14px;"><strong>Linhas com Erro (bloqueadas antes da gravação):</strong><ul style="margin-top:6px;padding-left:18px;font-size:12.5px;">` +
+            rel.erros.map(e => `<li>Linha ${e.linha}: ${e.motivo}</li>`).join("") +
             `</ul></div>`;
     }
 
-    if (analise.duplicados.length) {
-        html += `<div class="suggestion-item aviso" style="margin-bottom:12px;"><strong>Duplicatas detectadas (ignoradas):</strong><ul style="margin-left:18px;font-size:12.5px;">` +
-            analise.duplicados.map(d => `<li>Linha ${d.linha}: ${d.motivo}</li>`).join("") +
-            `</ul></div>`;
+    if (rel.previa.length > 0) {
+        html += `
+            <h4 class="editorial-section-title">Prévia das Primeiras Linhas Válidas</h4>
+            <div class="table-responsive">
+                <table class="finan-table">
+                    <thead><tr><th>Linha</th><th>Data</th><th>Tipo</th><th>Categoria</th><th>Descrição</th><th class="text-right">Valor</th></tr></thead>
+                    <tbody>
+                        ${rel.previa.map(p => `
+                            <tr>
+                                <td class="tabular-nums">${p.linha}</td>
+                                <td class="tabular-nums">${p.data_br}</td>
+                                <td><span class="badge badge-${p.tipo}">${p.tipo}</span></td>
+                                <td>${p.categoria}</td>
+                                <td>${p.descricao}</td>
+                                <td class="text-right tabular-nums">${formatarMoeda(p.valor)}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
     }
 
-    container.innerHTML = html;
+    boxResultado.innerHTML = html;
+    btnConfirmar.style.display = estado.linhasCsvValidas.length > 0 ? "inline-block" : "none";
 }
 
 async function confirmarGravacaoCSV() {
-    if (!estado.validosCsvPendentes.length) return;
+    if (!estado.linhasCsvValidas.length) return;
     const resp = await fetch("/api/csv/confirmar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ validos: estado.validosCsvPendentes, modo: estado.modo })
+        body: JSON.stringify({ linhas_validas: estado.linhasCsvValidas, modo: estado.modo })
     });
     const dados = await resp.json();
     if (resp.ok) {
-        estado.validosCsvPendentes = [];
+        mostrarToast(dados.mensagem);
         document.getElementById("btn-confirmar-csv").style.display = "none";
         document.getElementById("resultado-previa-csv").innerHTML = "";
         document.getElementById("input-arquivo-csv").value = "";
-        mostrarToast(dados.mensagem);
+        estado.linhasCsvValidas = [];
         carregarDados();
+    } else {
+        mostrarToast(`Erro: ${dados.erro}`);
     }
 }
 
 // ============================================================
-// 6. METAS E PLANEJAMENTO
+// 6. METAS E PLANEJAMENTO FINANCEIRO
 // ============================================================
 function renderizarMetas() {
     const grid = document.getElementById("grid-metas");
     if (!estado.metas.length) {
-        grid.innerHTML = `<div class="glass-card"><p style="color:#94a3b8;">Nenhuma meta cadastrada neste modo. Clique em <strong>+ Definir Nova Meta</strong>.</p></div>`;
+        grid.innerHTML = `
+            <div class="surface-card empty-state" style="grid-column:1/-1;">
+                <span class="eyebrow-label">Planejamento Patrimonial</span>
+                <h3>Nenhuma meta de economia cadastrada</h3>
+                <p>Defina um objetivo financeiro e um prazo para calcularmos o aporte mensal necessário e monitorarmos a viabilidade com base no seu saldo real.</p>
+            </div>
+        `;
         return;
     }
 
@@ -438,31 +646,31 @@ function renderizarMetas() {
         <div class="meta-card">
             <div class="meta-top">
                 <div>
-                    <h4>🏆 ${m.titulo}</h4>
-                    <small>Prazo: <strong>${m.prazo_br}</strong> (${m.meses_restantes} mês(es) restante(s))</small>
+                    <h4>${limparEmojisLegados(m.titulo)}</h4>
+                    <div class="meta-deadline">Vencimento: <strong class="tabular-nums">${m.prazo_br}</strong> (${m.meses_restantes} mês(es) restante(s))</div>
                 </div>
-                <button class="btn-icon-danger" onclick="excluirMeta(${m.id})">🗑️</button>
+                <button class="btn-mini btn-mini-danger" onclick="excluirMeta(${m.id})">Remover</button>
             </div>
 
-            <div class="progress-track">
-                <div class="progress-fill" style="width:${m.percentual_concluido}%;"></div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width:${Math.min(100, m.percentual_concluido)}%;"></div>
             </div>
 
-            <div class="meta-numbers">
+            <div class="meta-Amounts tabular-nums">
                 <span>Acumulado: <strong>${formatarMoeda(m.valor_acumulado)}</strong> (${m.percentual_concluido.toFixed(1)}%)</span>
-                <span>Meta: <strong>${formatarMoeda(m.valor_alvo)}</strong></span>
+                <span>Objetivo: <strong>${formatarMoeda(m.valor_alvo)}</strong></span>
             </div>
 
-            <div class="panel-row" style="margin-bottom:6px;">
-                <span>Valor faltante:</span>
+            <div class="panel-row tabular-nums">
+                <span>Saldo restante para a meta:</span>
                 <strong>${formatarMoeda(m.valor_faltante)}</strong>
             </div>
-            <div class="panel-row" style="margin-bottom:12px;">
-                <span>Economia mensal necessária:</span>
-                <strong style="color:#60a5fa;">${formatarMoeda(m.economia_mensal_necessaria)}/mês</strong>
+            <div class="panel-row tabular-nums" style="margin-bottom:14px;">
+                <span>Aporte mensal necessário:</span>
+                <strong style="color:#183D32;">${formatarMoeda(m.economia_mensal_necessaria)}/mês</strong>
             </div>
 
-            <div class="suggestion-item ${m.nivel_alerta}" style="margin-bottom:12px;">
+            <div class="suggestion-item ${m.nivel_alerta}">
                 <strong>${m.status_texto}</strong>
                 <p>${m.mensagem_alerta}</p>
             </div>
@@ -473,30 +681,20 @@ function renderizarMetas() {
 async function excluirMeta(id) {
     if (!confirm("Deseja remover esta meta de economia?")) return;
     await fetch(`/api/metas/${id}`, { method: "DELETE" });
-    mostrarToast("Meta removida!");
+    mostrarToast("Meta removida.");
     carregarDados();
 }
 
 // ============================================================
-// 7. FINANPY AI ASSISTANT
+// 7. CONSULTORIA ANALÍTICA (FINANPY AI ASSISTANT)
 // ============================================================
-function formatarMarkdownIA(texto) {
-    if (!texto) return "";
-    return String(texto)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\*\*(.+?)\*\*/g, '<b style="color:#f8fafc;">$1</b>')
-        .replace(/\*(.+?)\*/g, "<em>$1</em>");
-}
-
 function renderizarAssistenteIA(diag, statusIa) {
     document.getElementById("ia-status-banner").textContent = statusIa.modo_padrao;
     const labelLlm = document.getElementById("label-check-llm");
     labelLlm.style.display = statusIa.llm_disponivel ? "inline-block" : "none";
 
     document.getElementById("ia-resumo-executivo").innerHTML = `
-        <strong>Resumo Executivo do Período</strong>
+        <strong>Síntese Executiva do Período</strong>
         <p>${formatarMarkdownIA(diag.resumo_executivo)}</p>
     `;
 
@@ -510,9 +708,9 @@ function renderizarAssistenteIA(diag, statusIa) {
     (diag.recomendacoes || []).forEach(r => {
         itensOp.push(`<div class="suggestion-item ${r.nivel}"><strong>${formatarMarkdownIA(r.titulo)}</strong><p>${formatarMarkdownIA(r.texto)}</p></div>`);
     });
-    divOp.innerHTML = itensOp.join("") || `<p style="color:#94a3b8;font-size:13px;">Sem recomendações adicionais para o período.</p>`;
+    divOp.innerHTML = itensOp.join("") || `<p style="color:#777E78;font-size:13px;">Sem recomendações adicionais para o período.</p>`;
 
-    document.getElementById("ia-explicacao").textContent = `📐 ${diag.explicacao_calculo} (${diag.aviso_modo})`;
+    document.getElementById("ia-explicacao").textContent = `Nota Metodológica: ${diag.explicacao_calculo} (${diag.aviso_modo})`;
 }
 
 async function enviarPerguntaIA(pergunta) {
@@ -528,9 +726,9 @@ async function enviarPerguntaIA(pergunta) {
     const card = document.createElement("div");
     card.className = "suggestion-item info";
     card.innerHTML = `
-        <strong>Você perguntou: "${formatarMarkdownIA(pergunta)}"</strong>
+        <strong>Consulta: "${formatarMarkdownIA(pergunta)}"</strong>
         <p style="white-space:pre-line; margin-top:6px;">${formatarMarkdownIA(dados.resposta)}</p>
-        <small style="display:block; margin-top:8px; color:#64748b;">🔒 ${formatarMarkdownIA(dados.aviso_modo)}</small>
+        <small style="display:block; margin-top:10px; color:#777E78; font-size:11.5px;">Fonte: ${formatarMarkdownIA(dados.aviso_modo)}</small>
     `;
     hist.prepend(card);
 }
@@ -549,14 +747,14 @@ function renderizarCategoriasConfig() {
     recContainer.innerHTML = (estado.categoriasPorTipo.Receita || []).map(c => `
         <span class="badge badge-Receita" style="display:inline-flex;align-items:center;gap:6px;">
             ${c}
-            ${c !== "Outros" ? `<button onclick="removerCategoria('${c}', 'Receita')" style="background:none;border:none;color:#f87171;cursor:pointer;">&times;</button>` : ""}
+            ${c !== "Outros" ? `<button class="cat-tag-remove" onclick="removerCategoria('${c}', 'Receita')" title="Remover categoria">&times;</button>` : ""}
         </span>
     `).join("");
 
     despContainer.innerHTML = (estado.categoriasPorTipo.Despesa || []).map(c => `
         <span class="badge badge-Despesa" style="display:inline-flex;align-items:center;gap:6px;">
             ${c}
-            ${c !== "Outros" ? `<button onclick="removerCategoria('${c}', 'Despesa')" style="background:none;border:none;color:#f87171;cursor:pointer;">&times;</button>` : ""}
+            ${c !== "Outros" ? `<button class="cat-tag-remove" onclick="removerCategoria('${c}', 'Despesa')" title="Remover categoria">&times;</button>` : ""}
         </span>
     `).join("");
 }
@@ -575,7 +773,7 @@ async function removerCategoria(nome, tipo) {
 async function ativarDemonstracaoRapida() {
     await fetch("/api/demo/carregar", { method: "POST" });
     estado.modo = "demo";
-    mostrarToast("Modo de Demonstração ativado com dados fictícios!");
+    mostrarToast("Base demonstrativa ativada.");
     carregarDados();
 }
 
@@ -584,10 +782,9 @@ async function ativarDemonstracaoRapida() {
 // ============================================================
 document.addEventListener("DOMContentLoaded", () => {
     configurarNavegacao();
-    document.getElementById("lanc-tipo").addEventListener("change", () => atualizarOpcoesCategoriaModal());
+    document.getElementById("lanc-tipo").addEventListener("change", e => atualizarOpcoesCategoriaModal(e.target.value));
     document.getElementById("meta-prazo").value = `${new Date().getFullYear() + 1}-12-31`;
 
-    // Filtros globais e modo de dados
     document.getElementById("select-modo-dados").addEventListener("change", e => {
         estado.modo = e.target.value;
         carregarDados();
@@ -605,11 +802,9 @@ document.addEventListener("DOMContentLoaded", () => {
         carregarDados();
     });
 
-    // Busca e filtro da tabela
     document.getElementById("input-busca").addEventListener("input", renderizarTabelaLancamentos);
     document.getElementById("filtro-tipo-tabela").addEventListener("change", renderizarTabelaLancamentos);
 
-    // Salvar (Criar ou Editar) Lançamento
     document.getElementById("form-lancamento").addEventListener("submit", async e => {
         e.preventDefault();
         const idExistente = document.getElementById("lanc-id").value;
@@ -643,7 +838,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Salvar Meta
     document.getElementById("form-meta").addEventListener("submit", async e => {
         e.preventDefault();
         const payload = {
@@ -669,7 +863,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Importação e Exportação CSV
     document.getElementById("btn-validar-csv").addEventListener("click", validarArquivoCSV);
     document.getElementById("btn-confirmar-csv").addEventListener("click", confirmarGravacaoCSV);
     document.getElementById("btn-exportar-csv").addEventListener("click", () => {
@@ -682,7 +875,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = `/api/csv/exportar?${params.toString()}`;
     });
 
-    // Pergunta ao Assistente de IA
     document.getElementById("form-pergunta-ia").addEventListener("submit", e => {
         e.preventDefault();
         const input = document.getElementById("input-pergunta-ia");
@@ -692,7 +884,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Categorias Editáveis e Gestão de Dados Demo/Reais
     document.getElementById("form-nova-categoria").addEventListener("submit", async e => {
         e.preventDefault();
         const nome = document.getElementById("cat-novo-nome").value;
@@ -721,7 +912,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("btn-limpar-dados-reais").addEventListener("click", async () => {
-        if (!confirm("Tem certeza absoluta? Isso apagará todos os seus lançamentos e metas reais salvos localmente.")) return;
+        if (!confirm("Confirmar a exclusão permanente de todos os seus lançamentos e metas reais salvos localmente?")) return;
         const resp = await fetch("/api/dados-usuario/limpar", { method: "POST" });
         const dados = await resp.json();
         mostrarToast(dados.mensagem);

@@ -3,46 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinanPy AI PRO — Assistente Inteligente de Análise Financeira</title>
-    <link rel="icon" href="/static/img/finanpy.ico" type="image/x-icon">
+    <title>FinanPy AI — Gestão Financeira &amp; Inteligência Patrimonial</title>
+    <link rel="icon" href="/static/img/finanpy.ico?v=editorial2" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Lora:ital,wght@0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/style.css?v=editorial2">
 </head>
 <body>
     <div class="app-layout">
-        <!-- BARRA LATERAL (SIDEBAR) -->
+        <!-- BARRA LATERAL DISCRETA (EDITORIAL SIDEBAR) -->
         <aside class="sidebar">
             <div class="brand">
-                <div class="brand-logo">₿</div>
+                <div class="brand-mark" aria-hidden="true">F</div>
                 <div class="brand-text">
-                    <h1>FinanPy AI <span class="badge-pro">PRO</span></h1>
-                    <p>Financial Intelligence</p>
+                    <h1>FinanPy</h1>
+                    <p>Wealth &amp; Financial Advisory</p>
                 </div>
             </div>
 
-            <nav class="nav-menu">
+            <div class="nav-group-label">Navegação</div>
+            <nav class="nav-menu" aria-label="Menu principal">
                 <button class="nav-item active" data-target="view-dashboard">
-                    <span class="nav-icon">📊</span>
-                    <span>Dashboard</span>
+                    <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+                        <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+                        <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+                        <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+                    </svg>
+                    <span>Visão Geral</span>
                 </button>
                 <button class="nav-item" data-target="view-lancamentos">
-                    <span class="nav-icon">💳</span>
-                    <span>Lançamentos & CSV</span>
+                    <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path d="M4 6h16M4 12h16M4 18h12"></path>
+                    </svg>
+                    <span>Movimentações &amp; CSV</span>
                 </button>
                 <button class="nav-item" data-target="view-metas">
-                    <span class="nav-icon">🎯</span>
-                    <span>Metas & Planejamento</span>
+                    <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 3v2M12 19v2M3 12h2M19 12h2"></path>
+                    </svg>
+                    <span>Metas &amp; Planejamento</span>
                 </button>
                 <button class="nav-item" data-target="view-ia">
-                    <span class="nav-icon">🤖</span>
-                    <span>Assistente de IA</span>
+                    <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"></path>
+                    </svg>
+                    <span>Consultoria Analítica</span>
                 </button>
                 <button class="nav-item" data-target="view-config">
-                    <span class="nav-icon">⚙️</span>
-                    <span>Configurações & Dados</span>
+                    <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Parâmetros &amp; Dados</span>
                 </button>
             </nav>
 
@@ -50,199 +67,266 @@
                 <div class="engine-status">
                     <span class="status-dot"></span>
                     <div>
-                        <strong>Modo de Dados Ativo:</strong>
-                        <small id="sidebar-modo-label">👤 Meus Dados Reais</small>
+                        <span class="status-caption">Base ativa</span>
+                        <small id="sidebar-modo-label">Carteira Pessoal</small>
                     </div>
                 </div>
+                <label for="select-modo-dados" class="sr-only">Selecionar fonte de dados</label>
                 <select id="select-modo-dados" class="input-select full-width">
-                    <option value="usuario">👤 Meus Dados Reais</option>
-                    <option value="demo">🧪 Dados de Demonstração</option>
+                    <option value="usuario">Carteira Pessoal (Real)</option>
+                    <option value="demo">Base de Demonstração</option>
                 </select>
                 <button id="btn-carregar-demo-rapido" class="btn-outline-sm">
-                    ✨ Carregar Dados Fictícios Demo
+                    Carregar Base de Exemplo
                 </button>
             </div>
         </aside>
 
-        <!-- ÁREA PRINCIPAL -->
+        <!-- ÁREA PRINCIPAL AMPLA -->
         <main class="main-content">
-            <!-- BANNER DE AVISO QUANDO NO MODO DEMONSTRAÇÃO -->
-            <div id="banner-demo" class="suggestion-item aviso" style="display:none; margin-bottom:18px;">
-                <strong>🧪 Modo de Demonstração Ativo (Dados Fictícios)</strong>
-                <p>Você está visualizando exemplos fictícios isolados dos seus dados reais. Todos os gráficos, saldos e recomendações abaixo são calculados em tempo real pelo Python sobre esses registros.</p>
+            <!-- AVISO DISCRETO QUANDO NO MODO DEMONSTRAÇÃO -->
+            <div id="banner-demo" class="editorial-notice" style="display:none;">
+                <div class="notice-tag">Modo de Demonstração</div>
+                <p>Você está inspecionando a carteira demonstrativa isolada dos seus registros pessoais. Todos os saldos, indicadores e pareceres abaixo são calculados em tempo real sobre esses dados.</p>
             </div>
 
-            <!-- CABEÇALHO E FILTROS GLOBAIS -->
+            <!-- CABEÇALHO MINIMALISTA E CONTROLES DE PERÍODO -->
             <header class="topbar">
-                <div>
-                    <h2 id="page-title">Painel de Inteligência Financeira</h2>
-                    <p id="page-subtitle">Análise de receitas, despesas, evolução patrimonial e recomendações</p>
+                <div class="topbar-titles">
+                    <span class="eyebrow-label" id="page-eyebrow">Relatório Patrimonial</span>
+                    <h2 id="page-title">Central de Inteligência Financeira</h2>
+                    <p id="page-subtitle">Síntese de fluxo de caixa, alocação por categoria e análise consultiva</p>
                 </div>
 
                 <div class="topbar-actions">
-                    <div class="filter-group">
-                        <label for="filtro-ano">Ano:</label>
-                        <select id="filtro-ano" class="input-select">
-                            <option value="Todos">Todos</option>
-                        </select>
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label for="filtro-ano">Ano</label>
+                            <select id="filtro-ano" class="input-select">
+                                <option value="Todos">Todos</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-mes">Mês</label>
+                            <select id="filtro-mes" class="input-select">
+                                <option value="Todos">Todos</option>
+                                <option value="1">Jan</option>
+                                <option value="2">Fev</option>
+                                <option value="3">Mar</option>
+                                <option value="4">Abr</option>
+                                <option value="5">Mai</option>
+                                <option value="6">Jun</option>
+                                <option value="7">Jul</option>
+                                <option value="8">Ago</option>
+                                <option value="9">Set</option>
+                                <option value="10">Out</option>
+                                <option value="11">Nov</option>
+                                <option value="12">Dez</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <label for="filtro-categoria-global">Categoria</label>
+                            <select id="filtro-categoria-global" class="input-select">
+                                <option value="Todas">Todas</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="filter-group">
-                        <label for="filtro-mes">Mês:</label>
-                        <select id="filtro-mes" class="input-select">
-                            <option value="Todos">Todos</option>
-                            <option value="1">01 - Jan</option>
-                            <option value="2">02 - Fev</option>
-                            <option value="3">03 - Mar</option>
-                            <option value="4">04 - Abr</option>
-                            <option value="5">05 - Mai</option>
-                            <option value="6">06 - Jun</option>
-                            <option value="7">07 - Jul</option>
-                            <option value="8">08 - Ago</option>
-                            <option value="9">09 - Set</option>
-                            <option value="10">10 - Out</option>
-                            <option value="11">11 - Nov</option>
-                            <option value="12">12 - Dez</option>
-                        </select>
+                    <div class="action-buttons">
+                        <button id="btn-exportar-csv" class="btn-secondary">
+                            Exportar CSV
+                        </button>
+                        <button id="btn-abrir-modal-novo" class="btn-primary">
+                            + Novo Lançamento
+                        </button>
                     </div>
-
-                    <div class="filter-group">
-                        <label for="filtro-categoria-global">Categoria:</label>
-                        <select id="filtro-categoria-global" class="input-select">
-                            <option value="Todas">Todas</option>
-                        </select>
-                    </div>
-
-                    <button id="btn-exportar-csv" class="btn-secondary">
-                        📥 Exportar CSV
-                    </button>
-
-                    <button id="btn-abrir-modal-novo" class="btn-primary">
-                        + Novo Lançamento
-                    </button>
                 </div>
             </header>
 
             <!-- ==========================================
-                 VIEW 1: DASHBOARD FINANCEIRO
+                 VIEW 1: DASHBOARD FINANCEIRO (CENTRAL DE INTELIGÊNCIA)
                  ========================================== -->
             <section id="view-dashboard" class="view-section active">
+                <!-- 1. INDICADORES PATRIMONIAIS PRINCIPAIS -->
                 <div class="kpi-grid">
-                    <div class="kpi-card kpi-income">
+                    <article class="kpi-card kpi-balance-featured">
                         <div class="kpi-header">
-                            <span>Total de Receitas</span>
-                            <span class="kpi-icon">↗</span>
+                            <span>Saldo Disponível no Período</span>
+                            <span class="kpi-tag" id="kpi-saldo-badge">Resultado Líquido</span>
                         </div>
-                        <div class="kpi-value" id="kpi-receitas">R$ 0,00</div>
-                        <div class="kpi-footer" id="kpi-receitas-sub">0 entradas no período</div>
-                    </div>
-
-                    <div class="kpi-card kpi-expense">
-                        <div class="kpi-header">
-                            <span>Total de Despesas</span>
-                            <span class="kpi-icon">↘</span>
-                        </div>
-                        <div class="kpi-value" id="kpi-despesas">R$ 0,00</div>
-                        <div class="kpi-footer" id="kpi-despesas-sub">0 saídas no período</div>
-                    </div>
-
-                    <div class="kpi-card kpi-balance">
-                        <div class="kpi-header">
-                            <span>Saldo Financeiro</span>
-                            <span class="kpi-icon">🏦</span>
-                        </div>
-                        <div class="kpi-value" id="kpi-saldo">R$ 0,00</div>
+                        <div class="kpi-value tabular-nums" id="kpi-saldo">R$ 0,00</div>
                         <div class="kpi-footer" id="kpi-saldo-sub">Receitas menos despesas</div>
-                    </div>
+                    </article>
 
-                    <div class="kpi-card kpi-debt">
+                    <article class="kpi-card">
                         <div class="kpi-header">
-                            <span>Receita Comprometida</span>
-                            <span class="kpi-icon">📉</span>
+                            <span>Receitas do Período</span>
+                            <span class="kpi-indicator indicator-positive">Entradas</span>
                         </div>
-                        <div class="kpi-value" id="kpi-comprometido">0,0%</div>
+                        <div class="kpi-value tabular-nums" id="kpi-receitas">R$ 0,00</div>
+                        <div class="kpi-footer" id="kpi-receitas-sub">0 entradas registradas</div>
+                    </article>
+
+                    <article class="kpi-card">
+                        <div class="kpi-header">
+                            <span>Despesas do Período</span>
+                            <span class="kpi-indicator indicator-negative">Saídas</span>
+                        </div>
+                        <div class="kpi-value kpi-value-expense tabular-nums" id="kpi-despesas">R$ 0,00</div>
+                        <div class="kpi-footer" id="kpi-despesas-sub">0 saídas registradas</div>
+                    </article>
+
+                    <article class="kpi-card">
+                        <div class="kpi-header">
+                            <span>Economia &amp; Comprometimento</span>
+                            <span class="kpi-indicator indicator-neutral">Margem</span>
+                        </div>
+                        <div class="kpi-value tabular-nums" id="kpi-comprometido">0,0%</div>
                         <div class="kpi-footer" id="kpi-comprometido-sub">Taxa de economia: 0,0%</div>
-                    </div>
+                    </article>
                 </div>
 
                 <!-- ESTADO VAZIO INFORMATIVO -->
-                <div id="dashboard-vazio" class="glass-card of-empty" style="display:none;">
-                    <div class="of-empty-icon">📭</div>
-                    <h3>Nenhum lançamento encontrado para os filtros selecionados</h3>
-                    <p>Adicione sua primeira receita ou despesa clicando em <strong>+ Novo Lançamento</strong>, importe um arquivo CSV ou ative os <strong>Dados de Demonstração</strong> na barra lateral para explorar os gráficos.</p>
-                    <div style="display:flex; gap:12px; justify-content:center; margin-top:14px;">
-                        <button class="btn-primary" onclick="abrirModalNovoLancamento()">+ Adicionar Lançamento</button>
-                        <button class="btn-secondary" onclick="ativarDemonstracaoRapida()">🧪 Testar com Dados Fictícios</button>
+                <div id="dashboard-vazio" class="surface-card empty-state" style="display:none;">
+                    <span class="eyebrow-label">Carteira sem registros no filtro atual</span>
+                    <h3>Nenhuma movimentação encontrada para o período</h3>
+                    <p>Registre sua primeira receita ou despesa em <strong>+ Novo Lançamento</strong>, importe uma planilha CSV ou ative a <strong>Base de Demonstração</strong> na barra lateral para inspecionar os relatórios.</p>
+                    <div class="empty-state-actions">
+                        <button class="btn-primary" onclick="abrirModalNovoLancamento()">+ Registrar Lançamento</button>
+                        <button class="btn-secondary" onclick="ativarDemonstracaoRapida()">Carregar Base de Demonstração</button>
                     </div>
                 </div>
 
-                <!-- GRÁFICOS DO DASHBOARD -->
+                <!-- CONTEÚDO ANALÍTICO DO DASHBOARD -->
                 <div id="dashboard-graficos">
-                    <div class="charts-grid-2">
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <div>
-                                    <h3>📅 Comparativo de Receitas e Despesas por Mês</h3>
-                                    <p>Evolução mensal comparativa e linha de saldo mensal (R$)</p>
-                                </div>
+                    <!-- 2. SEÇÃO EDITORIAL DE ANÁLISE FINANCEIRA (INSIGHTS DO CONSULTOR) -->
+                    <section class="editorial-advisory-panel" aria-label="Análise e Recomendações do Consultor">
+                        <div class="advisory-header">
+                            <div>
+                                <span class="eyebrow-label">Parecer Analítico</span>
+                                <h3>Notas do Consultor Financeiro</h3>
                             </div>
-                            <div id="chart-mensal" class="chart-box"></div>
+                            <button class="btn-link-editorial" onclick="navegarParaSecao('view-ia')">
+                                Abrir consultoria completa &rarr;
+                            </button>
                         </div>
+                        <div id="dashboard-editorial-insights" class="advisory-columns"></div>
+                    </section>
 
-                        <div class="glass-card">
-                            <div class="card-header">
-                                <div>
-                                    <h3>🍩 Distribuição dos Gastos por Categoria</h3>
-                                    <p>Participação percentual de cada categoria no total de despesas</p>
-                                </div>
-                            </div>
-                            <div id="chart-categorias" class="chart-box"></div>
-                        </div>
-                    </div>
-
+                    <!-- 3. EVOLUÇÃO FINANCEIRA E COMPARATIVO MENSAL -->
                     <div class="charts-grid-2">
-                        <div class="glass-card">
+                        <article class="surface-card">
                             <div class="card-header">
                                 <div>
-                                    <h3>📈 Evolução do Saldo ao Longo do Tempo</h3>
-                                    <p>Trajetória cronológica do saldo acumulado (DD/MM/AAAA)</p>
+                                    <span class="card-eyebrow">Trajetória Patrimonial</span>
+                                    <h3>Evolução do Saldo ao Longo do Tempo</h3>
+                                    <p>Saldo acumulado calculado cronologicamente a cada movimentação (DD/MM/AAAA)</p>
                                 </div>
                             </div>
                             <div id="chart-evolucao-saldo" class="chart-box"></div>
-                        </div>
+                        </article>
 
-                        <div class="glass-card">
+                        <article class="surface-card">
                             <div class="card-header">
                                 <div>
-                                    <h3>🌊 Fluxo de Caixa (Diagrama Sankey)</h3>
-                                    <p>Rastreamento de como as fontes de receita abastecem despesas e saldo</p>
+                                    <span class="card-eyebrow">Balanço Mensal</span>
+                                    <h3>Comparativo de Receitas e Despesas</h3>
+                                    <p>Confronto mensal entre entradas, saídas e resultado líquido (R$)</p>
+                                </div>
+                            </div>
+                            <div id="chart-mensal" class="chart-box"></div>
+                        </article>
+                    </div>
+
+                    <!-- 4. CATEGORIAS COM MAIORES DESPESAS, DISTRIBUIÇÃO E FLUXO DE CAIXA -->
+                    <div class="charts-grid-3-editorial">
+                        <article class="surface-card">
+                            <div class="card-header">
+                                <div>
+                                    <span class="card-eyebrow">Concentração de Saídas</span>
+                                    <h3>Categorias com Maiores Despesas</h3>
+                                    <p>Participação relativa e volume financeiro por centro de custo</p>
+                                </div>
+                            </div>
+                            <div id="dashboard-top-categorias" class="top-categories-list"></div>
+                        </article>
+
+                        <article class="surface-card">
+                            <div class="card-header">
+                                <div>
+                                    <span class="card-eyebrow">Composição Orçamentária</span>
+                                    <h3>Distribuição de Gastos</h3>
+                                    <p>Proporção percentual das despesas do período</p>
+                                </div>
+                            </div>
+                            <div id="chart-categorias" class="chart-box"></div>
+                        </article>
+                    </div>
+
+                    <div class="charts-grid-2">
+                        <article class="surface-card">
+                            <div class="card-header">
+                                <div>
+                                    <span class="card-eyebrow">Rastreabilidade Orçamentária</span>
+                                    <h3>Fluxo de Alocação de Recursos (Sankey)</h3>
+                                    <p>Mapeamento entre fontes de receita, categorias de despesa e parcela poupada</p>
                                 </div>
                             </div>
                             <div id="chart-sankey" class="chart-box"></div>
-                        </div>
+                        </article>
+
+                        <!-- 5. HISTÓRICO RECENTE DE MOVIMENTAÇÕES NO DASHBOARD -->
+                        <article class="surface-card">
+                            <div class="card-header card-header-split">
+                                <div>
+                                    <span class="card-eyebrow">Livro-Razão Recente</span>
+                                    <h3>Últimas Movimentações</h3>
+                                    <p>Registros mais recentes do período selecionado</p>
+                                </div>
+                                <button class="btn-link-editorial" onclick="navegarParaSecao('view-lancamentos')">
+                                    Ver histórico completo &rarr;
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="finan-table compact-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Descrição</th>
+                                            <th>Categoria</th>
+                                            <th class="text-right">Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashboard-recent-body"></tbody>
+                                </table>
+                            </div>
+                        </article>
                     </div>
                 </div>
             </section>
 
             <!-- ==========================================
-                 VIEW 2: LANÇAMENTOS & IMPORTAÇÃO CSV
+                 VIEW 2: MOVIMENTAÇÕES & IMPORTAÇÃO CSV
                  ========================================== -->
             <section id="view-lancamentos" class="view-section">
-                <div class="glass-card">
+                <article class="surface-card">
                     <div class="card-header">
                         <div>
-                            <h3>📋 Histórico de Receitas e Despesas</h3>
-                            <p>Consulte, filtre, edite ou exclua lançamentos com validação de integridade</p>
+                            <span class="card-eyebrow">Registro Contábil</span>
+                            <h3>Histórico Completo de Receitas e Despesas</h3>
+                            <p>Consulte, filtre, edite ou exclua lançamentos com precisão decimal em centavos</p>
                         </div>
                     </div>
 
                     <div class="table-toolbar">
-                        <input type="text" id="input-busca" class="input-text" placeholder="🔍 Buscar por descrição ou categoria...">
+                        <input type="text" id="input-busca" class="input-text" placeholder="Buscar por descrição ou categoria...">
                         <div class="toolbar-filters">
                             <select id="filtro-tipo-tabela" class="input-select">
-                                <option value="Todos">Todos os Tipos</option>
-                                <option value="Receita">🟢 Apenas Receitas</option>
-                                <option value="Despesa">🔴 Apenas Despesas</option>
+                                <option value="Todos">Todos os tipos</option>
+                                <option value="Receita">Apenas Receitas</option>
+                                <option value="Despesa">Apenas Despesas</option>
                             </select>
                         </div>
                     </div>
@@ -252,37 +336,38 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Data (DD/MM/AAAA)</th>
+                                    <th>Data</th>
                                     <th>Tipo</th>
                                     <th>Categoria</th>
                                     <th>Descrição</th>
-                                    <th>Origem</th>
-                                    <th>Valor (R$)</th>
+                                    <th>Base</th>
+                                    <th class="text-right">Valor (R$)</th>
                                     <th class="text-right">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="tabela-lancamentos-body"></tbody>
                         </table>
                     </div>
-                </div>
+                </article>
 
                 <!-- PAINEL DE IMPORTAÇÃO CSV COM PRÉVIA E VALIDAÇÃO -->
-                <div class="glass-card">
+                <article class="surface-card">
                     <div class="card-header">
                         <div>
-                            <h3>📂 Importar Lançamentos via Arquivo CSV</h3>
-                            <p>Colunas exigidas: <code>data,descricao,valor,categoria,tipo</code> (datas em DD/MM/AAAA ou AAAA-MM-DD). Linhas inválidas ou duplicadas são bloqueadas antes da gravação.</p>
+                            <span class="card-eyebrow">Conciliação de Arquivos</span>
+                            <h3>Importação de Extrato CSV com Validação Prévia</h3>
+                            <p>Colunas esperadas: <code>data,descricao,valor,categoria,tipo</code> (datas em DD/MM/AAAA ou AAAA-MM-DD). Duplicatas e linhas inconsistentes são retidas antes da gravação.</p>
                         </div>
                     </div>
 
-                    <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
+                    <div class="csv-upload-bar">
                         <input type="file" id="input-arquivo-csv" accept=".csv" class="input-text">
-                        <button id="btn-validar-csv" class="btn-secondary">🔍 Validar e Gerar Prévia</button>
-                        <button id="btn-confirmar-csv" class="btn-primary" style="display:none;">✅ Confirmar Gravação dos Válidos</button>
+                        <button id="btn-validar-csv" class="btn-secondary">Validar e Gerar Prévia</button>
+                        <button id="btn-confirmar-csv" class="btn-primary" style="display:none;">Confirmar Gravação dos Válidos</button>
                     </div>
 
                     <div id="resultado-previa-csv"></div>
-                </div>
+                </article>
             </section>
 
             <!-- ==========================================
@@ -291,8 +376,9 @@
             <section id="view-metas" class="view-section">
                 <div class="section-header-bar">
                     <div>
-                        <h3>🎯 Metas de Economia e Planejamento</h3>
-                        <p>Progresso calculado com base nos seus lançamentos e estimativa de esforço mensal até o prazo</p>
+                        <span class="eyebrow-label">Objetivos Cadastrados</span>
+                        <h3>Carteira de Reservas e Projetos</h3>
+                        <p>Progresso calculado sobre o saldo líquido e estimativa de aporte mensal até a data-limite</p>
                     </div>
                     <button id="btn-abrir-modal-meta" class="btn-primary">
                         + Definir Nova Meta
@@ -303,59 +389,61 @@
             </section>
 
             <!-- ==========================================
-                 VIEW 4: FINANPY AI ASSISTANT
+                 VIEW 4: ASSISTENTE DE CONSULTORIA FINANCEIRA (IA)
                  ========================================== -->
             <section id="view-ia" class="view-section">
-                <div class="glass-card">
+                <article class="surface-card">
                     <div class="card-header">
                         <div>
-                            <h3>🤖 FinanPy AI Assistant — Diagnóstico dos Seus Dados</h3>
-                            <p id="ia-status-banner">Modo de Análise Local Determinística em Python (Sem envio de dados para serviços externos)</p>
+                            <span class="card-eyebrow">Inteligência Aplicada</span>
+                            <h3>Diagnóstico Patrimonial e Recomendações</h3>
+                            <p id="ia-status-banner">Análise determinística local em Python — cálculos exatos sem envio de dados a terceiros</p>
                         </div>
                     </div>
 
-                    <div id="ia-resumo-executivo" class="suggestion-item info" style="margin-bottom:18px;"></div>
+                    <div id="ia-resumo-executivo" class="editorial-callout"></div>
 
                     <div class="charts-grid-2">
                         <div>
-                            <h4 class="of-subtitle">🔎 Categorias de Maior Gasto & Comparação Temporal</h4>
+                            <h4 class="editorial-section-title">Concentração de Gastos &amp; Comparação Temporal</h4>
                             <div id="ia-maiores-gastos" class="suggestions-list"></div>
                         </div>
                         <div>
-                            <h4 class="of-subtitle">💡 Oportunidades de Economia & Alertas</h4>
+                            <h4 class="editorial-section-title">Oportunidades de Eficiência &amp; Alertas</h4>
                             <div id="ia-oportunidades" class="suggestions-list"></div>
                         </div>
                     </div>
 
-                    <div id="ia-explicacao" style="margin-top:16px; font-size:12px; color:#94a3b8; border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;"></div>
-                </div>
+                    <div id="ia-explicacao" class="methodology-footnote"></div>
+                </article>
 
                 <!-- PERGUNTAS E RESPOSTAS SOBRE OS DADOS -->
-                <div class="glass-card">
-                    <div class="card-header">
+                <article class="surface-card">
+                    <div class="card-header card-header-split">
                         <div>
-                            <h3>💬 Pergunte ao Assistente sobre suas Finanças</h3>
-                            <p>Respostas baseadas estritamente nos cálculos determinísticos feitos a partir dos seus registros</p>
+                            <span class="card-eyebrow">Consulta Direta aos Dados</span>
+                            <h3>Consultor Analítico FinanPy</h3>
+                            <p>Questione seus indicadores, variações mensais, categorias de despesa ou viabilidade de metas</p>
                         </div>
-                        <label id="label-check-llm" style="display:none; font-size:12.5px; color:#a5b4fc; cursor:pointer;">
-                            <input type="checkbox" id="check-usar-llm"> Usar redação via LLM externo (.env)
+                        <label id="label-check-llm" class="llm-toggle-label" style="display:none;">
+                            <input type="checkbox" id="check-usar-llm"> Redação assistida por LLM externo (.env)
                         </label>
                     </div>
 
-                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
-                        <button class="btn-secondary" onclick="fazerPerguntaRapida('Onde estou gastando mais neste período?')">🔎 Onde gasto mais?</button>
-                        <button class="btn-secondary" onclick="fazerPerguntaRapida('Quais são as oportunidades realistas de economia?')">💡 Como economizar?</button>
-                        <button class="btn-secondary" onclick="fazerPerguntaRapida('Compare os meus gastos entre os meses disponíveis.')">📊 Meus gastos aumentaram?</button>
-                        <button class="btn-secondary" onclick="fazerPerguntaRapida('Qual a situação das minhas metas de economia?')">🎯 Vou atingir minhas metas?</button>
+                    <div class="prompt-pills-bar">
+                        <button class="btn-pill" onclick="fazerPerguntaRapida('Onde estou gastando mais neste período?')">Onde concentro meus maiores gastos?</button>
+                        <button class="btn-pill" onclick="fazerPerguntaRapida('Quais são as oportunidades realistas de economia?')">Quais são as oportunidades de economia?</button>
+                        <button class="btn-pill" onclick="fazerPerguntaRapida('Compare os meus gastos entre os meses disponíveis.')">Como evoluíram meus gastos entre os meses?</button>
+                        <button class="btn-pill" onclick="fazerPerguntaRapida('Qual a situação das minhas metas de economia?')">Qual a viabilidade das minhas metas?</button>
                     </div>
 
-                    <form id="form-pergunta-ia" style="display:flex; gap:10px; margin-bottom:18px;">
-                        <input type="text" id="input-pergunta-ia" class="input-text" style="flex:1;" placeholder="Digite sua pergunta sobre suas receitas, despesas, categorias ou metas...">
-                        <button type="submit" class="btn-primary">Perguntar</button>
+                    <form id="form-pergunta-ia" class="advisor-query-form">
+                        <input type="text" id="input-pergunta-ia" class="input-text" placeholder="Faça uma pergunta objetiva sobre suas receitas, despesas, categorias ou metas...">
+                        <button type="submit" class="btn-primary">Consultar</button>
                     </form>
 
                     <div id="historico-respostas-ia" class="suggestions-list"></div>
-                </div>
+                </article>
             </section>
 
             <!-- ==========================================
@@ -363,53 +451,56 @@
                  ========================================== -->
             <section id="view-config" class="view-section">
                 <div class="charts-grid-2">
-                    <div class="glass-card">
+                    <article class="surface-card">
                         <div class="card-header">
                             <div>
-                                <h3>🏷️ Categorias Editáveis</h3>
-                                <p>Diferenciadas entre Receitas e Despesas para evitar lançamentos inconsistentes</p>
+                                <span class="card-eyebrow">Plano de Contas</span>
+                                <h3>Categorias de Receita e Despesa</h3>
+                                <p>Estruturadas por natureza contábil para impedir classificações incompatíveis</p>
                             </div>
                         </div>
 
-                        <form id="form-nova-categoria" style="display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;">
-                            <input type="text" id="cat-novo-nome" class="input-text" style="flex:1;" placeholder="Nova categoria (ex: Pet Shop, Investimentos)..." required>
+                        <form id="form-nova-categoria" class="category-form">
+                            <input type="text" id="cat-novo-nome" class="input-text" placeholder="Nome da nova categoria (ex.: Dividendos, Condomínio)..." required>
                             <select id="cat-novo-tipo" class="input-select">
-                                <option value="Despesa">🔴 Despesa</option>
-                                <option value="Receita">🟢 Receita</option>
+                                <option value="Despesa">Despesa</option>
+                                <option value="Receita">Receita</option>
                             </select>
-                            <button type="submit" class="btn-primary">+ Adicionar</button>
+                            <button type="submit" class="btn-primary">Adicionar</button>
                         </form>
 
-                        <h4 class="of-subtitle">🟢 Categorias de Receita</h4>
-                        <div id="lista-cats-receita" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;"></div>
+                        <h4 class="editorial-section-title">Categorias de Receita</h4>
+                        <div id="lista-cats-receita" class="tags-container"></div>
 
-                        <h4 class="of-subtitle">🔴 Categorias de Despesa</h4>
-                        <div id="lista-cats-despesa" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
-                    </div>
+                        <h4 class="editorial-section-title">Categorias de Despesa</h4>
+                        <div id="lista-cats-despesa" class="tags-container"></div>
+                    </article>
 
-                    <div class="glass-card">
+                    <article class="surface-card">
                         <div class="card-header">
                             <div>
-                                <h3>🔒 Privacidade, Demonstração e Gestão de Dados Locais</h3>
-                                <p>Seus dados ficam salvos localmente em SQLite (<code>data/finanpy_ai.db</code>)</p>
+                                <span class="card-eyebrow">Governança &amp; Armazenamento</span>
+                                <h3>Privacidade, Base de Demonstração e Dados Locais</h3>
+                                <p>Persistência local em banco relacional SQLite (<code>data/finanpy_ai.db</code>)</p>
                             </div>
                         </div>
 
-                        <div class="suggestion-item info" style="margin-bottom:16px;">
-                            <strong>Escopo e Limitações de Segurança</strong>
-                            <p>Esta versão local é destinada ao uso individual. Não implementa autenticação multiusuário nem criptografia de nível bancário em repouso. Credenciais e bancos locais estão protegidos no <code>.gitignore</code>.</p>
+                        <div class="suggestion-item info" style="margin-bottom:20px;">
+                            <strong>Escopo Técnico e Privacidade</strong>
+                            <p>Aplicação projetada para operação local individual. As consultas utilizam parâmetros vinculados (SQL parametrizado) e arquivos sensíveis (<code>.env</code> e <code>*.db</code>) permanecem isolados fora do controle de versão.</p>
                         </div>
 
-                        <h4 class="of-subtitle">🧪 Conjunto de Dados Fictícios (Demonstração)</h4>
-                        <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
-                            <button id="btn-config-carregar-demo" class="btn-secondary">✨ Carregar Dados Fictícios</button>
-                            <button id="btn-config-remover-demo" class="btn-secondary">🧹 Remover Apenas Dados Fictícios</button>
+                        <h4 class="editorial-section-title">Base Fictícia de Demonstração</h4>
+                        <p class="config-helper-text">Carrega ou remove 26 lançamentos demonstrativos de 3 meses sem afetar seus registros pessoais.</p>
+                        <div class="config-btn-group">
+                            <button id="btn-config-carregar-demo" class="btn-secondary">Carregar Dados de Demonstração</button>
+                            <button id="btn-config-remover-demo" class="btn-secondary">Remover Dados de Demonstração</button>
                         </div>
 
-                        <h4 class="of-subtitle">🚨 Zona de Exclusão de Dados Reais</h4>
-                        <p style="font-size:12.5px; color:#94a3b8; margin-bottom:10px;">Remove permanentemente todos os seus lançamentos e metas reais armazenados no banco local.</p>
-                        <button id="btn-limpar-dados-reais" class="btn-icon-danger" style="padding:10px 16px;">🗑️ Excluir Todos os Meus Dados Reais</button>
-                    </div>
+                        <h4 class="editorial-section-title">Exclusão de Registros Pessoais</h4>
+                        <p class="config-helper-text">Remove permanentemente todas as receitas, despesas e metas reais gravadas no banco local.</p>
+                        <button id="btn-limpar-dados-reais" class="btn-danger-outline">Excluir Meus Dados Reais</button>
+                    </article>
                 </div>
             </section>
         </main>
@@ -421,40 +512,43 @@
     <div id="modal-lancamento" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 id="modal-lancamento-titulo">➕ Novo Lançamento</h3>
-                <button class="modal-close" data-close="modal-lancamento">&times;</button>
+                <div>
+                    <span class="card-eyebrow">Registro Contábil</span>
+                    <h3 id="modal-lancamento-titulo">Novo Lançamento</h3>
+                </div>
+                <button class="modal-close" data-close="modal-lancamento" aria-label="Fechar">&times;</button>
             </div>
             <form id="form-lancamento">
                 <input type="hidden" id="lanc-id" value="">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>Tipo de Lançamento *</label>
+                        <label for="lanc-tipo">Natureza do Lançamento *</label>
                         <select id="lanc-tipo" class="input-select" required>
-                            <option value="Despesa">🔴 Despesa</option>
-                            <option value="Receita">🟢 Receita</option>
+                            <option value="Despesa">Despesa</option>
+                            <option value="Receita">Receita</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Categoria *</label>
+                        <label for="lanc-categoria">Categoria *</label>
                         <select id="lanc-categoria" class="input-select" required></select>
                     </div>
                     <div class="form-group full-col">
-                        <label>Descrição *</label>
-                        <input type="text" id="lanc-descricao" class="input-text" placeholder="Ex: Supermercado, Salário Mensal, Energia..." required>
+                        <label for="lanc-descricao">Descrição *</label>
+                        <input type="text" id="lanc-descricao" class="input-text" placeholder="Ex.: Salário Mensal, Aluguel, Supermercado..." required>
                     </div>
                     <div class="form-group">
-                        <label>Valor (R$) *</label>
-                        <input type="number" id="lanc-valor" class="input-text" min="0.01" step="0.01" placeholder="0.00" required>
+                        <label for="lanc-valor">Valor (R$) *</label>
+                        <input type="number" id="lanc-valor" class="input-text tabular-nums" min="0.01" step="0.01" placeholder="0,00" required>
                     </div>
                     <div class="form-group">
-                        <label>Data *</label>
+                        <label for="lanc-data">Data *</label>
                         <input type="date" id="lanc-data" class="input-text" required>
                     </div>
                 </div>
-                <div id="erro-form-lancamento" style="color:#f87171; font-size:12.5px; margin-top:10px; display:none;"></div>
+                <div id="erro-form-lancamento" class="form-error-msg" style="display:none;"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" data-close="modal-lancamento">Cancelar</button>
-                    <button type="submit" class="btn-primary">💾 Salvar Lançamento</button>
+                    <button type="submit" class="btn-primary">Salvar Lançamento</button>
                 </div>
             </form>
         </div>
@@ -466,37 +560,40 @@
     <div id="modal-meta" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>🎯 Definir Meta de Economia</h3>
-                <button class="modal-close" data-close="modal-meta">&times;</button>
+                <div>
+                    <span class="card-eyebrow">Planejamento Patrimonial</span>
+                    <h3>Definir Meta de Economia</h3>
+                </div>
+                <button class="modal-close" data-close="modal-meta" aria-label="Fechar">&times;</button>
             </div>
             <form id="form-meta">
                 <div class="form-grid">
                     <div class="form-group full-col">
-                        <label>Título da Meta *</label>
-                        <input type="text" id="meta-titulo" class="input-text" placeholder="Ex: Reserva de Emergência, Viagem..." required>
+                        <label for="meta-titulo">Objetivo Financeiro *</label>
+                        <input type="text" id="meta-titulo" class="input-text" placeholder="Ex.: Reserva de Emergência, Pós-Graduação..." required>
                     </div>
                     <div class="form-group">
-                        <label>Valor Desejado (R$) *</label>
-                        <input type="number" id="meta-alvo" class="input-text" min="10" step="50" placeholder="5000.00" required>
+                        <label for="meta-alvo">Valor Alvo (R$) *</label>
+                        <input type="number" id="meta-alvo" class="input-text tabular-nums" min="10" step="50" placeholder="10000.00" required>
                     </div>
                     <div class="form-group">
-                        <label>Valor Inicial Já Guardado (R$)</label>
-                        <input type="number" id="meta-inicial" class="input-text" min="0" step="50" value="0" required>
+                        <label for="meta-inicial">Reserva Inicial Já Alocada (R$)</label>
+                        <input type="number" id="meta-inicial" class="input-text tabular-nums" min="0" step="50" value="0" required>
                     </div>
                     <div class="form-group full-col">
-                        <label>Prazo Desejado *</label>
+                        <label for="meta-prazo">Data-Limite *</label>
                         <input type="date" id="meta-prazo" class="input-text" required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" data-close="modal-meta">Cancelar</button>
-                    <button type="submit" class="btn-primary">🎯 Salvar Meta</button>
+                    <button type="submit" class="btn-primary">Salvar Meta</button>
                 </div>
             </form>
         </div>
     </div>
 
     <div id="toast" class="toast"></div>
-    <script src="/static/js/app.js"></script>
+    <script src="/static/js/app.js?v=editorial2"></script>
 </body>
 </html>

@@ -1,25 +1,25 @@
-# 🤖 FinanPy AI PRO — Assistente Inteligente de Análise Financeira Pessoal
+# FinanPy AI — Gestão Financeira & Inteligência Patrimonial
 
-Aplicação web Full-Stack de análise e planejamento financeiro pessoal desenvolvida em **Python** com **Flask**, **HTML5/CSS3/JS (Dark Fintech Glassmorphism)**, **Pandas**, **Plotly**, **SQLite** e um **Assistente de IA Híbrido** (motor determinístico local + integração opcional com LLM).
+Aplicação web Full-Stack de análise e planejamento financeiro pessoal desenvolvida em **Python** com **Flask**, **HTML5/CSS3/JS (Editorial Fintech / Wealth Management)**, **Pandas**, **Plotly**, **SQLite** e um **Assistente de Consultoria Analítica Híbrido** (motor determinístico local + integração opcional com LLM).
 
-Este projeto foi construído como portfólio prático para demonstrar engenharia de software, modelagem de dados, precisão em cálculos financeiros, testes automatizados e aplicação responsável de Inteligência Artificial.
+Este projeto foi construído como portfólio prático para demonstrar engenharia de software, direção de arte digital para produtos financeiros, precisão em cálculos monetários, testes automatizados e aplicação responsável de Inteligência Artificial.
 
 ---
 
 ## 📸 Demonstração Visual (Capturas de Tela Reais da Aplicação)
 
-> *Nota de transparência: As capturas abaixo foram geradas a partir da aplicação em execução real utilizando o conjunto de dados de demonstração (`[DEMO]`), com todos os indicadores, gráficos e recomendações calculados pelo Python.*
+> *Nota de transparência: As capturas abaixo foram geradas diretamente da aplicação em execução real utilizando a base de demonstração (`[DEMO]`), com todos os indicadores, gráficos e pareceres calculados pelo Python.*
 
-### 1. Dashboard Financeiro Interativo (KPIs, Comparativo Mensal, Categorias, Saldo e Fluxo Sankey)
+### 1. Central de Inteligência Financeira (KPIs Patrimoniais, Notas do Consultor, Evolução e Categorias)
 ![Dashboard Financeiro](./docs/screenshots/01-dashboard.png)
 
-### 2. FinanPy AI Assistant (Diagnóstico Determinístico, Oportunidades de Economia e Q&A)
+### 2. Consultoria Analítica & FinanPy AI Assistant (Diagnóstico Determinístico e Consulta Direta)
 ![FinanPy AI Assistant](./docs/screenshots/04-assistente-ia.png)
 
-### 3. Metas de Economia e Planejamento Mensal
+### 3. Metas de Economia e Planejamento de Longo Prazo
 ![Metas e Planejamento](./docs/screenshots/03-metas.png)
 
-### 4. Gestão de Lançamentos e Importação/Exportação CSV com Validação Prévia
+### 4. Livro-Razão de Movimentações e Conciliação CSV com Validação Prévia
 ![Lançamentos e CSV](./docs/screenshots/02-lancamentos.png)
 
 ---
@@ -38,13 +38,13 @@ O **FinanPy AI** resolve esse problema unindo:
 ## ✨ 2. Funcionalidades Implementadas vs. Planejadas
 
 ### Funcionalidades Implementadas (Verificadas e Testadas)
-- **Dashboard Financeiro Interativo**: Total de receitas, despesas, saldo do período, percentual da receita comprometido, gráfico comparativo mensal (receitas × despesas), gráfico de rosca por categoria e linha de evolução do saldo acumulado.
+- **Central de Inteligência Financeira (Dashboard)**: Saldo disponível em destaque, receitas, despesas, taxa de economia e receita comprometida, painel editorial *Notas do Consultor Financeiro*, ranking de categorias com maiores despesas, gráficos minimalistas (Evolução do Saldo, Comparativo Mensal, Distribuição de Gastos, Fluxo Sankey) e prévia das últimas movimentações.
 - **Filtros Dinâmicos**: Filtragem por Ano, Mês, Categoria, Tipo e busca textual.
 - **Gestão Completa de Lançamentos (CRUD)**: Criação, consulta, edição e exclusão com confirmação, validação de datas (`DD/MM/AAAA` e `AAAA-MM-DD`) e bloqueio de categorias incompatíveis entre `Receita` e `Despesa`.
 - **Categorias Editáveis**: Adição e remoção de categorias personalizadas separadas por tipo, protegendo categorias que já possuem lançamentos vinculados.
 - **Importação e Exportação CSV**: Validação prévia linha a linha antes de gravar, exibição de prévia, relatório detalhado de linhas com erro, detecção automática de duplicatas (no arquivo e no banco) e exportação filtrada em CSV.
 - **Metas e Planejamento**: Cadastro de metas de economia com prazo, cálculo de progresso real, estimativa de economia mensal necessária e alertas automáticos quando o saldo ou a média histórica indicam dificuldade para cumprir a meta.
-- **FinanPy AI Assistant**: Resumo executivo do período, identificação dos maiores gastos, comparação entre meses, sugestões de economia calculadas sobre categorias variáveis e chat de perguntas e respostas sobre os dados (modo determinístico local + integração opcional via `.env` com Google Gemini ou OpenAI).
+- **Consultoria Analítica (FinanPy AI Assistant)**: Síntese executiva do período, identificação dos maiores gastos, comparação entre meses, sugestões de economia calculadas sobre categorias variáveis e consulta direta sobre os dados (modo determinístico local + integração opcional via `.env` com Google Gemini ou OpenAI).
 - **Conjunto de Demonstração Isolado**: Opção para carregar e remover 26 lançamentos fictícios de 3 meses (`is_demo = 1`) sem misturar nem afetar os dados reais do usuário (`is_demo = 0`).
 
 ### Melhorias Futuras (Planejadas)
@@ -59,9 +59,9 @@ O **FinanPy AI** resolve esse problema unindo:
 | Tecnologia | Papel no Projeto | Justificativa da Escolha |
 | :--- | :--- | :--- |
 | **Python 3.11+** | Linguagem principal | Ecossistema maduro para análise de dados, finanças e IA, com código legível e didático. |
-| **Flask + HTML5/CSS3/JS** | Servidor Web & UI Dark Fintech (`app.py`, `templates/`, `static/`) | Interface moderna em modo escuro (*Fintech Dark Glassmorphism*) sem protótipos fictícios, comunicando-se via API REST JSON. |
+| **Flask + HTML5/CSS3/JS** | Servidor Web & UI Editorial Fintech (`app.py`, `templates/`, `static/`) | Interface inspirada em plataformas de *Wealth Management* (`#F7F6F0` / `#183D32`, tipografia `DM Serif Display`, `Lora` e `Manrope` tabular), comunicando-se via API REST JSON. |
 | **Pandas** | Processamento Analítico | Agrupamentos por categoria (`groupby`), tabelas dinâmicas mensais (`pivot_table`) e séries temporais. |
-| **Plotly** | Visualização de Dados | Gráficos interativos responsivos (Evolução Mensal, Rosca por Categoria, Linha de Saldo e Diagrama Sankey). |
+| **Plotly** | Visualização de Dados | Gráficos interativos minimalistas (Evolução do Saldo, Comparativo Mensal, Rosca por Categoria e Fluxo Sankey). |
 | **SQLite (`sqlite3`)** | Banco de Dados Local | Nativo do Python, suporta transações atômicas (`ACID`), constraints `CHECK` e consultas parametrizadas sem exigir servidor externo. |
 | **Pytest** | Testes Automatizados | Validação rápida e reprodutível das regras de negócio, rotas REST, casos-limite e importação CSV. |
 | **python-dotenv** | Configuração Segura | Carrega chaves opcionais de API a partir de arquivo `.env` local ignorado pelo Git. |
@@ -72,17 +72,17 @@ O **FinanPy AI** resolve esse problema unindo:
 
 ```text
 FinanPy/
-├── app.py                      # Servidor principal Full-Stack Flask + API REST (FinanPy AI PRO)
+├── app.py                      # Servidor principal Full-Stack Flask + API REST
 ├── FinanPy.py                  # Ponto de entrada alternativo (atalho para app.py)
 ├── requirements.txt            # Dependências do projeto
 ├── README.md                   # Documentação principal
 ├── .gitignore                  # Proteção contra versionamento de .venv, .env e *.db
 ├── .env.example                # Modelo de variáveis de ambiente opcionais
 ├── templates/
-│   └── index.html              # Interface SPA em HTML5 (Dashboard, Lançamentos, Metas, IA, Config)
+│   └── index.html              # Interface SPA em HTML5 (Editorial Wealth Management)
 ├── static/
-│   ├── css/style.css           # Design System Dark Fintech Glassmorphism
-│   └── js/app.js               # Lógica Front-End (Fetch API, Plotly.js, Validação CSV)
+│   ├── css/style.css           # Design System Editorial Fintech (#F7F6F0 / #183D32)
+│   └── js/app.js               # Controlador Front-End (Fetch API, Plotly Editorial, CSV)
 ├── data/                       # Diretório do banco SQLite local (ignorado no Git)
 ├── src/
 │   ├── __init__.py

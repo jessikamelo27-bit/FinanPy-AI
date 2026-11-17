@@ -39,19 +39,17 @@ def _criar_png_icone(tamanho: int = 64) -> bytes:
                 row.extend((0, 0, 0, 0))
                 continue
 
-            # Gradiente diagonal (#3b82f6 -> #6366f1 -> #1e1b4b)
+            # Fundo Verde Profundo Editorial (#183D32) com leve nuance para #557A62
             t = (x + y) / (2.0 * tamanho)
-            r = int(59 * (1 - t) + 99 * t)
-            g = int(130 * (1 - t) + 70 * t)
-            b = int(246 * (1 - t) + 229 * t)
+            r = int(24 * (1 - t * 0.35) + 45 * (t * 0.35))
+            g = int(61 * (1 - t * 0.35) + 88 * (t * 0.35))
+            b = int(50 * (1 - t * 0.35) + 72 * (t * 0.35))
 
-            # Borda iluminada sutil
-            if dist_canto > raio_max - 2.2:
-                r = min(255, r + 45)
-                g = min(255, g + 45)
-                b = min(255, b + 45)
+            # Borda sutil em tom sálvia (#557A62)
+            if dist_canto > raio_max - 2.0:
+                r, g, b = 85, 122, 98
 
-            # Desenha um símbolo "F$" estilizado / barras de gráfico ascendentes em branco no centro
+            # Barras de evolução patrimonial em Marfim Suave (#F7F6F0)
             nx = (x - tamanho * 0.22) / (tamanho * 0.56)
             ny = (y - tamanho * 0.22) / (tamanho * 0.56)
 
@@ -61,7 +59,7 @@ def _criar_png_icone(tamanho: int = 64) -> bytes:
             is_base = (0.08 <= nx <= 0.92) and (0.83 <= ny <= 0.91)
 
             if is_bar1 or is_bar2 or is_bar3 or is_base:
-                row.extend((248, 250, 252, 255))
+                row.extend((247, 246, 240, 255))
             else:
                 row.extend((r, g, b, 255))
 
@@ -111,7 +109,7 @@ namespace FinanPyLauncher
 {{
     static class Program
     {{
-        private const string AppUrl = "http://127.0.0.1:5000";
+        private const string AppUrl = "http://127.0.0.1:5000/?v=editorial2";
         private const string HealthUrl = "http://127.0.0.1:5000/api/categorias";
         private const string ProjectDir = "{root_escaped}";
 

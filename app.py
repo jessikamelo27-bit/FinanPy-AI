@@ -79,9 +79,18 @@ def tratar_value_error(exc: ValueError):
     return jsonify({"erro": str(exc)}), 400
 
 
+@app.after_request
+def desativar_cache_estatico(response):
+    """Garante que o executável desktop sempre carregue a interface mais recente sem cache antigo."""
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+
 @app.route("/")
 def index():
-    """Renderiza a interface web Dark Fintech PRO."""
+    """Renderiza a interface web Editorial Fintech / Wealth Management."""
     return render_template("index.html")
 
 
